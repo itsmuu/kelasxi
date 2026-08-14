@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Latihan Subnetting CIDR Kompleks</title>
+    <title>Latihan Subnetting CIDR Dinamis</title>
     <!-- Component Navbar Sticky -->
     <script src="navbar.js" defer></script>
     <style>
@@ -214,7 +214,7 @@
         <div id="loginSection" class="card">
             <h2>Login Siswa</h2>
             <p style="color: #64748b; font-size: 14px; margin-bottom: 20px;">
-                Masukkan NIS Anda untuk verifikasi data dan mengambil soal.
+                Masukkan NIS Anda untuk verifikasi data dan mengambil paket soal unik.
             </p>
             
             <div id="errorMessage" class="error-box hidden"></div>
@@ -222,7 +222,7 @@
             <form id="loginForm" onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label for="studentNis">Nomor Induk Siswa (NIS)</label>
-                    <input type="text" id="studentNis" placeholder="Masukkan NIS terdaftar (contoh: 2513715)" required>
+                    <input type="text" id="studentNis" placeholder="Masukkan NIS terdaftar (contoh: 25-13715)" required>
                 </div>
                 <button type="submit" id="loginBtn" class="btn">Mulai Kerjakan Soal</button>
             </form>
@@ -235,7 +235,7 @@
                 Selamat Mengerjakan, <span id="studentWelcomeName" style="color: #007bff;">Siswa</span>!
             </h2>
             <p style="color: #64748b; font-size: 15px;">
-                Sistem sedang mengacak soal tingkat lanjut untuk Anda...
+                Sistem sedang meng-generate paket soal khusus NIS Anda...
             </p>
 
             <div class="loading-bar-container">
@@ -252,7 +252,7 @@
                 <span id="nisBadge" class="badge">GANJIL</span>
             </div>
 
-            <h2>Soal Latihan Subnetting CIDR (Tingkat Lanjut)</h2>
+            <h2>Soal Latihan Subnetting CIDR</h2>
             
             <div class="question-box">
                 <span id="questionCategory" style="font-weight: 600; color: #007bff; font-size: 13px; display: block; margin-bottom: 4px;">KATEGORI GANJIL</span>
@@ -311,104 +311,94 @@
         // =========================================================================
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwfb2-2IyY7Ylkp_dMdjJv_tGDNMbTF-PRENvxMXxiNHplA2MK9gA76pvPpBjwYspwDug/exec";
 
-        // Bank Soal Subnetting CIDR Kompleks & Teracak
-        const bankSoal = {
-            ganjil: [
-                {
-                    id: "G1-ADV",
-                    text: "Sebuah host pada jaringan core router memiliki IP Address <strong>172.20.142.85/21</strong>. Analisis dan hitunglah parameter subnetting lengkap untuk subnet dari host tersebut:",
-                    correct: {
-                        subnetMask: "255.255.248.0",
-                        networkAddress: "172.20.136.0",
-                        broadcastAddress: "172.20.143.255",
-                        usableRange: "172.20.136.1 - 172.20.143.254",
-                        totalHosts: 2046
-                    }
-                },
-                {
-                    id: "G2-ADV",
-                    text: "Sebuah server terhubung ke switch dengan IP <strong>192.168.45.198/29</strong>. Carilah informasi subnetting tempat server tersebut terhubung:",
-                    correct: {
-                        subnetMask: "255.255.255.248",
-                        networkAddress: "192.168.45.192",
-                        broadcastAddress: "192.168.45.199",
-                        usableRange: "192.168.45.193 - 192.168.45.198",
-                        totalHosts: 6
-                    }
-                },
-                {
-                    id: "G3-ADV",
-                    text: "Sistem Data Center dialokasikan alamat IP <strong>10.88.170.210/19</strong>. Tentukan konfigurasi parameternya:",
-                    correct: {
-                        subnetMask: "255.255.224.0",
-                        networkAddress: "10.88.160.0",
-                        broadcastAddress: "10.88.191.255",
-                        usableRange: "10.88.160.1 - 10.88.191.254",
-                        totalHosts: 8190
-                    }
-                },
-                {
-                    id: "G4-ADV",
-                    text: "Interface router ISP memiliki IP Address <strong>172.31.99.14/23</strong>. Hitung parameter batas subnetting dari alokasi tersebut:",
-                    correct: {
-                        subnetMask: "255.255.254.0",
-                        networkAddress: "172.31.98.0",
-                        broadcastAddress: "172.31.99.255",
-                        usableRange: "172.31.98.1 - 172.31.99.254",
-                        totalHosts: 510
-                    }
-                }
-            ],
-            genap: [
-                {
-                    id: "E1-ADV",
-                    text: "Komputer administrator jaringan terkonfigurasi IP <strong>172.16.75.200/22</strong>. Tentukan parameter batas jaringan dari IP tersebut:",
-                    correct: {
-                        subnetMask: "255.255.252.0",
-                        networkAddress: "172.16.72.0",
-                        broadcastAddress: "172.16.75.255",
-                        usableRange: "172.16.72.1 - 172.16.75.254",
-                        totalHosts: 1022
-                    }
-                },
-                {
-                    id: "E2-ADV",
-                    text: "Suatu Access Point dialokasikan IP Address <strong>192.168.100.142/27</strong>. Analisis parameter subnetting lengkapnya:",
-                    correct: {
-                        subnetMask: "255.255.255.224",
-                        networkAddress: "192.168.100.128",
-                        broadcastAddress: "192.168.100.159",
-                        usableRange: "192.168.100.129 - 192.168.100.158",
-                        totalHosts: 30
-                    }
-                },
-                {
-                    id: "E3-ADV",
-                    text: "Node jaringan cloud dialokasikan IP <strong>10.200.215.50/18</strong>. Hitung parameter subnetting lengkap dari segmen ini:",
-                    correct: {
-                        subnetMask: "255.255.192.0",
-                        networkAddress: "10.200.192.0",
-                        broadcastAddress: "10.200.255.255",
-                        usableRange: "10.200.192.1 - 10.200.255.254",
-                        totalHosts: 16382
-                    }
-                },
-                {
-                    id: "E4-ADV",
-                    text: "IP Kamera Pengawas (CCTV) dikonfigurasi dengan alamat <strong>172.25.10.185/26</strong>. Tentukan seluruh parameter subnetting-nya:",
-                    correct: {
-                        subnetMask: "255.255.255.192",
-                        networkAddress: "172.25.10.128",
-                        broadcastAddress: "172.25.10.191",
-                        usableRange: "172.25.10.129 - 172.25.10.190",
-                        totalHosts: 62
-                    }
-                }
-            ]
-        };
-
         let currentUser = { name: "", nis: "", tipeNis: "" };
         let currentQuestion = null;
+
+        // =========================================================================
+        // ENGINE GENERATOR SOAL DINAMIK BERBASIS SEED NIS (ANTI SOAL KEMBAR)
+        // =========================================================================
+        function numToIp(num) {
+            return [
+                (num >>> 24) & 255,
+                (num >>> 16) & 255,
+                (num >>> 8) & 255,
+                num & 255
+            ].join('.');
+        }
+
+        function generateQuestionFromNis(nisStr, isGanjil) {
+            // 1. Hash NIS menjadi Angka Seed Unik
+            let seed = 0;
+            for (let i = 0; i < nisStr.length; i++) {
+                seed = (seed << 5) - seed + nisStr.charCodeAt(i);
+                seed |= 0;
+            }
+            seed = Math.abs(seed);
+
+            // PRNG (Pseudo-Random Generator) berdasarkan Seed
+            function nextRandom() {
+                seed = (seed * 9301 + 49297) % 233280;
+                return seed / 233280;
+            }
+
+            // 2. Tentukan Alokasi Kelas IP secara Acak
+            const classChoice = Math.floor(nextRandom() * 3);
+            let oct1, oct2, oct3, oct4;
+
+            if (classChoice === 0) { // Class C
+                oct1 = 192; oct2 = 168;
+                oct3 = Math.floor(nextRandom() * 200) + 1;
+                oct4 = Math.floor(nextRandom() * 250) + 1;
+            } else if (classChoice === 1) { // Class B
+                oct1 = 172;
+                oct2 = Math.floor(nextRandom() * 16) + 16; // 172.16 - 172.31
+                oct3 = Math.floor(nextRandom() * 200) + 1;
+                oct4 = Math.floor(nextRandom() * 250) + 1;
+            } else { // Class A
+                oct1 = 10;
+                oct2 = Math.floor(nextRandom() * 200) + 1;
+                oct3 = Math.floor(nextRandom() * 200) + 1;
+                oct4 = Math.floor(nextRandom() * 250) + 1;
+            }
+
+            // 3. Tentukan Prefix CIDR berdasarkan Kategori NIS
+            const cidrGanjilPool = [19, 21, 23, 25, 27, 29];
+            const cidrGenapPool = [18, 20, 22, 24, 26, 28];
+            const pool = isGanjil ? cidrGanjilPool : cidrGenapPool;
+            const cidr = pool[Math.floor(nextRandom() * pool.length)];
+
+            // 4. Kalkulator Subnetting Presisi (Internal JS Engine)
+            const ipNum = ((oct1 << 24) | (oct2 << 16) | (oct3 << 8) | oct4) >>> 0;
+            const maskNum = (0xFFFFFFFF << (32 - cidr)) >>> 0;
+            const netNum = (ipNum & maskNum) >>> 0;
+            const broadNum = (netNum | (~maskNum >>> 0)) >>> 0;
+            
+            const firstHostNum = netNum + 1;
+            const lastHostNum = broadNum - 1;
+            const totalHosts = broadNum - netNum - 1;
+
+            const subnetMaskStr = numToIp(maskNum);
+            const netAddrStr = numToIp(netNum);
+            const broadAddrStr = numToIp(broadNum);
+            const usableRangeStr = `${numToIp(firstHostNum)} - ${numToIp(lastHostNum)}`;
+
+            const hostIpStr = `${oct1}.${oct2}.${oct3}.${oct4}/${cidr}`;
+
+            // Kode Soal berbasis NIS Singkat
+            const codeId = `${isGanjil ? 'G' : 'E'}-${nisStr.replace(/\D/g, '').slice(-4)}`;
+
+            return {
+                id: codeId,
+                text: `Sebuah perangkat jaringan dikonfigurasi dengan Alamat IP <strong>${hostIpStr}</strong>. Analisis dan hitunglah seluruh parameter subnetting untuk jaringan tersebut:`,
+                correct: {
+                    subnetMask: subnetMaskStr,
+                    networkAddress: netAddrStr,
+                    broadcastAddress: broadAddrStr,
+                    usableRange: usableRangeStr,
+                    totalHosts: totalHosts
+                }
+            };
+        }
 
         // Validasi NIS via Spreadsheet & Tampilkan Loading Screen
         async function handleLogin(e) {
@@ -437,10 +427,8 @@
                     const isGanjil = lastDigit % 2 !== 0;
                     const tipe = isGanjil ? "ganjil" : "genap";
 
-                    // Pilih Soal Acak dari Bank Soal
-                    const listSoal = bankSoal[tipe];
-                    const randomIndex = Math.floor(Math.random() * listSoal.length);
-                    currentQuestion = listSoal[randomIndex];
+                    // Generate Soal Unik Khusus NIS Ini
+                    currentQuestion = generateQuestionFromNis(nisInput, isGanjil);
 
                     currentUser = { name, nis: nisInput, tipeNis: tipe.toUpperCase() };
 
