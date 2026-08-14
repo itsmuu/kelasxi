@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Media Pembelajaran Jaringan Komputer</title>
+    <!-- Script Component Navbar -->
+    <script src="navbar.js" defer></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        /* Hero Section Styling */
+        .hero {
+            padding: 60px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            min-height: calc(100vh - 80px);
+        }
+
+        .hero-content {
+            flex: 1;
+            max-width: 600px;
+        }
+
+        .badge-hero {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #eff6ff;
+            color: #2563eb;
+            border: 1px solid #bfdbfe;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .hero-content h1 {
+            font-size: 42px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.25;
+            margin-bottom: 18px;
+        }
+
+        .hero-content h1 span {
+            color: #007bff;
+        }
+
+        .hero-content p {
+            font-size: 18px;
+            color: #64748b;
+            margin-bottom: 32px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.25);
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: #ffffff;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+        }
+
+        .btn-secondary:hover {
+            background-color: #f1f5f9;
+            color: #1e293b;
+        }
+
+        /* Hero Illustration Styling */
+        .hero-illustration {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-illustration svg {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            filter: drop-shadow(0 10px 20px rgba(0, 123, 255, 0.1));
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 992px) {
+            .hero {
+                flex-direction: column-reverse;
+                text-align: center;
+                padding: 40px 20px;
+                min-height: auto;
+            }
+
+            .hero-content h1 {
+                font-size: 32px;
+            }
+
+            .hero-content p {
+                font-size: 16px;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Kustom Tag Sticky Navbar -->
+    <my-navbar></my-navbar>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        
+        <!-- TEKS DAN CTA -->
+        <div class="hero-content">
+            <div class="badge-hero">
+                <span>🌐</span> Media Pembelajaran Interaktif
+            </div>
+            <h1>Kuasai <span>Subnetting CIDR</span> & Jaringan Komputer</h1>
+            <p>
+                Platform latihan interaktif untuk menguji pemahaman analisis alokasi IP Address, Subnet Mask, Network, Broadcast, dan jumlah host secara akurat.
+            </p>
+            <div class="hero-buttons">
+                <a href="subnetting.html" class="btn btn-primary">Mulai Latihan Subnetting</a>
+                <a href="#fitur" class="btn btn-secondary">Pelajari Fitur</a>
+            </div>
+        </div>
+
+        <!-- ILUSTRASI VEKTOR JARINGAN (SVG) -->
+        <div class="hero-illustration">
+            <svg viewBox="0 0 500 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Background Glow -->
+                <circle cx="250" cy="200" r="160" fill="#E0F2FE" opacity="0.6"/>
+                
+                <!-- Network Connection Lines -->
+                <line x1="250" y1="120" x2="130" y2="230" stroke="#93C5FD" stroke-width="3" stroke-dasharray="6 6"/>
+                <line x1="250" y1="120" x2="370" y2="230" stroke="#93C5FD" stroke-width="3" stroke-dasharray="6 6"/>
+                <line x1="130" y1="230" x2="190" y2="330" stroke="#93C5FD" stroke-width="3"/>
+                <line x1="370" y1="230" x2="310" y2="330" stroke="#93C5FD" stroke-width="3"/>
+                <line x1="130" y1="230" x2="370" y2="230" stroke="#60A5FA" stroke-width="3"/>
+
+                <!-- Cloud / Router Pusat (Node Utama) -->
+                <g transform="translate(200, 70)">
+                    <rect x="0" y="0" width="100" height="70" rx="16" fill="#007BFF"/>
+                    <path d="M30 40H70M30 30H70M50 20V50" stroke="white" stroke-width="4" stroke-linecap="round"/>
+                    <circle cx="50" cy="35" r="22" stroke="white" stroke-width="3" fill="none"/>
+                </g>
+
+                <!-- Switch / Server Kiri (Node 2) -->
+                <g transform="translate(80, 195)">
+                    <rect x="0" y="0" width="100" height="60" rx="12" fill="#1E293B"/>
+                    <rect x="15" y="15" width="70" height="10" rx="3" fill="#334155"/>
+                    <circle cx="25" cy="40" r="4" fill="#10B981"/>
+                    <circle cx="40" cy="40" r="4" fill="#10B981"/>
+                    <circle cx="55" cy="40" r="4" fill="#F59E0B"/>
+                    <circle cx="70" cy="40" r="4" fill="#10B981"/>
+                </g>
+
+                <!-- Router/Firewall Kanan (Node 3) -->
+                <g transform="translate(320, 195)">
+                    <rect x="0" y="0" width="100" height="60" rx="12" fill="#1E293B"/>
+                    <rect x="15" y="15" width="70" height="10" rx="3" fill="#334155"/>
+                    <circle cx="25" cy="40" r="4" fill="#10B981"/>
+                    <circle cx="40" cy="40" r="4" fill="#10B981"/>
+                    <circle cx="55" cy="40" r="4" fill="#10B981"/>
+                    <circle cx="70" cy="40" r="4" fill="#EF4444"/>
+                </g>
+
+                <!-- Laptop / PC Client Bawah Kiri -->
+                <g transform="translate(150, 300)">
+                    <rect x="10" y="0" width="60" height="40" rx="6" fill="#3B82F6"/>
+                    <rect x="15" y="5" width="50" height="30" rx="3" fill="#EFF6FF"/>
+                    <path d="M0 45C0 42.2386 2.23858 40 5 40H75C77.7614 40 80 42.2386 80 45V48H0V45Z" fill="#94A3B8"/>
+                </g>
+
+                <!-- Laptop / PC Client Bawah Kanan -->
+                <g transform="translate(270, 300)">
+                    <rect x="10" y="0" width="60" height="40" rx="6" fill="#3B82F6"/>
+                    <rect x="15" y="5" width="50" height="30" rx="3" fill="#EFF6FF"/>
+                    <path d="M0 45C0 42.2386 2.23858 40 5 40H75C77.7614 40 80 42.2386 80 45V48H0V45Z" fill="#94A3B8"/>
+                </g>
+
+                <!-- Floating Data Packets Animation / Badges -->
+                <g transform="translate(110, 110)">
+                    <rect x="0" y="0" width="90" height="28" rx="14" fill="#FFFFFF" stroke="#E2E8F0"/>
+                    <text x="12" y="18" font-family="sans-serif" font-size="11" font-weight="bold" fill="#007BFF">IP: /26</text>
+                </g>
+
+                <g transform="translate(300, 110)">
+                    <rect x="0" y="0" width="90" height="28" rx="14" fill="#FFFFFF" stroke="#E2E8F0"/>
+                    <text x="12" y="18" font-family="sans-serif" font-size="11" font-weight="bold" fill="#10B981">192.168.1.0</text>
+                </g>
+            </svg>
+        </div>
+
+    </section>
+
+</body>
+</html>

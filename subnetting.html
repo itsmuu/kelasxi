@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latihan Subnetting CIDR</title>
+    <!-- Component Navbar Sticky -->
+    <script src="navbar.js" defer></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px 40px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 28px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 24px;
+        }
+
+        h2, h3 {
+            margin-top: 0;
+            color: #1e293b;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #475569;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 15px;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .btn:disabled {
+            background-color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        /* Status Badge User */
+        .user-info-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .user-info-bar span {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e40af;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-ganjil { background: #fef3c7; color: #92400e; }
+        .badge-genap { background: #dcfce7; color: #166534; }
+
+        /* Question Box */
+        .question-box {
+            background: #f1f5f9;
+            border-left: 4px solid #007bff;
+            padding: 16px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 24px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .result-card {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .score-display {
+            font-size: 48px;
+            font-weight: bold;
+            color: #007bff;
+            margin: 16px 0;
+        }
+
+        .error-box {
+            color: #dc2626;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Dynamic Sticky Navbar Component -->
+    <my-navbar></my-navbar>
+
+    <div class="container">
+        
+        <!-- SECTION 1: LOGIN NIS -->
+        <div id="loginSection" class="card">
+            <h2>Login Siswa</h2>
+            <p style="color: #64748b; font-size: 14px; margin-bottom: 20px;">
+                Masukkan NIS Anda untuk verifikasi data.
+            </p>
+            
+            <div id="errorMessage" class="error-box hidden"></div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="studentNis">Nomor Induk Siswa (NIS)</label>
+                    <input type="number" id="studentNis" placeholder="Masukkan NIS tanpa strip (-) " required>
+                </div>
+                <button type="submit" id="loginBtn" class="btn">Mulai Kerjakan Soal</button>
+            </form>
+        </div>
+
+        <!-- SECTION 2: SOAL SUBNETTING -->
+        <div id="quizSection" class="card hidden">
+            <div class="user-info-bar">
+                <div>
+                    <span id="displayStudentInfo">Nama Siswa (NIS: -)</span>
+                </div>
+                <span id="nisBadge" class="badge">GANJIL</span>
+            </div>
+
+            <h2>Soal Latihan Subnetting CIDR</h2>
+            
+            <div class="question-box">
+                <span id="questionCategory" style="font-weight: 600; color: #007bff; font-size: 13px; display: block; margin-bottom: 4px;">KATEGORI GANJIL</span>
+                <span id="questionText">Memuat soal...</span>
+            </div>
+
+            <form id="quizForm" onsubmit="handleSubmitQuiz(event)">
+                <div class="form-group">
+                    <label for="ansSubnetMask">1. Subnet Mask (Decimal)</label>
+                    <input type="text" id="ansSubnetMask" placeholder="Contoh: 255.255.255.192" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="ansNetworkAddress">2. Network Address (IP Network)</label>
+                    <input type="text" id="ansNetworkAddress" placeholder="Contoh: 192.168.10.0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="ansBroadcastAddress">3. Broadcast Address (IP Broadcas)</label>
+                    <input type="text" id="ansBroadcastAddress" placeholder="Contoh: 192.168.10.63" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="ansUsableRange">4. Range IP Host Yang Bisa Digunakan (Range Host)</label>
+                    <input type="text" id="ansUsableRange" placeholder="Contoh: 192.168.10.1 - 192.168.10.62" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="ansTotalUsableHosts">5. Jumlah Total Host Yang Boleh Digunakan</label>
+                    <input type="number" id="ansTotalUsableHosts" placeholder="Contoh: 62" required>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn">Kirim Jawaban</button>
+            </form>
+        </div>
+
+        <!-- SECTION 3: HASIL PENILAIAN -->
+        <div id="resultSection" class="card result-card hidden">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <h2>Jawaban Berhasil Terkirim!</h2>
+            <p style="color: #64748b; font-size: 15px;">Nilai Anda telah otomatis tercatat di Google Sheets.</p>
+            
+            <div class="score-display" id="finalScore">0 / 100</div>
+
+            <button onclick="location.reload()" class="btn" style="max-width: 200px; margin-top: 20px;">Selesai / Kembali</button>
+        </div>
+
+    </div>
+
+    <script>
+        // =========================================================================
+        // PASTEKAN WEB APP URL GOOGLE APPS SCRIPT ANDA DI SINI
+        // =========================================================================
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwfb2-2IyY7Ylkp_dMdjJv_tGDNMbTF-PRENvxMXxiNHplA2MK9gA76pvPpBjwYspwDug/exec";
+
+        // Bank Soal Subnetting CIDR
+        const bankSoal = {
+            ganjil: [
+                {
+                    id: "G1",
+                    text: "Sebuah jaringan komputer memiliki alokasi IP Address <strong>192.168.10.0/26</strong>. Tentukan paramater subnetting di bawah ini:",
+                    correct: {
+                        subnetMask: "255.255.255.192",
+                        networkAddress: "192.168.10.0",
+                        broadcastAddress: "192.168.10.63",
+                        usableRange: "192.168.10.1 - 192.168.10.62",
+                        totalHosts: 62
+                    }
+                },
+                {
+                    id: "G2",
+                    text: "Diberikan Alamat IP <strong>172.16.5.0/28</strong> untuk konfigurasi VLAN. Hitunglah parameter subnetting berikut:",
+                    correct: {
+                        subnetMask: "255.255.255.240",
+                        networkAddress: "172.16.5.0",
+                        broadcastAddress: "172.16.5.15",
+                        usableRange: "172.16.5.1 - 172.16.5.14",
+                        totalHosts: 14
+                    }
+                }
+            ],
+            genap: [
+                {
+                    id: "E1",
+                    text: "Server kantor menggunakan IP Address dengan Prefix CIDR <strong>192.168.1.0/27</strong>. Tentukan analisis subnetting berikut:",
+                    correct: {
+                        subnetMask: "255.255.255.224",
+                        networkAddress: "192.168.1.0",
+                        broadcastAddress: "192.168.1.31",
+                        usableRange: "192.168.1.1 - 192.168.1.30",
+                        totalHosts: 30
+                    }
+                },
+                {
+                    id: "E2",
+                    text: "Gedung A dialokasikan Network IP <strong>10.0.0.0/29</strong> untuk perangkat Point-to-Point. Hitung parameter berikut:",
+                    correct: {
+                        subnetMask: "255.255.255.248",
+                        networkAddress: "10.0.0.0",
+                        broadcastAddress: "10.0.0.7",
+                        usableRange: "10.0.0.1 - 10.0.0.6",
+                        totalHosts: 6
+                    }
+                }
+            ]
+        };
+
+        let currentUser = { name: "", nis: "", tipeNis: "" };
+        let currentQuestion = null;
+
+        // Validasi NIS via Spreadsheet
+        async function handleLogin(e) {
+            e.preventDefault();
+            const nisInput = document.getElementById("studentNis").value.trim();
+            const loginBtn = document.getElementById("loginBtn");
+            const errorMessage = document.getElementById("errorMessage");
+
+            if (!nisInput) return;
+
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = 'Memeriksa NIS... <span class="loading-spinner"></span>';
+            errorMessage.classList.add("hidden");
+
+            try {
+                // Request cek NIS ke Google Apps Script
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?nis=${encodeURIComponent(nisInput)}`);
+                const data = await response.json();
+
+                if (data.status === "success") {
+                    const name = data.nama;
+                    const nisNum = parseInt(nisInput, 10);
+                    const isGanjil = nisNum % 2 !== 0;
+                    const tipe = isGanjil ? "ganjil" : "genap";
+
+                    // Pilih Soal Acak
+                    const listSoal = bankSoal[tipe];
+                    const randomIndex = Math.floor(Math.random() * listSoal.length);
+                    currentQuestion = listSoal[randomIndex];
+
+                    currentUser = { name, nis: nisInput, tipeNis: tipe.toUpperCase() };
+
+                    // Update UI Tampilan
+                    document.getElementById("displayStudentInfo").innerText = `${name} (NIS: ${nisInput})`;
+                    const badge = document.getElementById("nisBadge");
+                    badge.innerText = `NIS ${tipe.toUpperCase()}`;
+                    badge.className = `badge badge-${tipe}`;
+
+                    document.getElementById("questionCategory").innerText = `SOAL KATEGORI NIS ${tipe.toUpperCase()} (KODE: ${currentQuestion.id})`;
+                    document.getElementById("questionText").innerHTML = currentQuestion.text;
+
+                    // Pindah Tampilan
+                    document.getElementById("loginSection").classList.add("hidden");
+                    document.getElementById("quizSection").classList.remove("hidden");
+                } else {
+                    errorMessage.innerText = data.message || "NIS tidak terdaftar!";
+                    errorMessage.classList.remove("hidden");
+                }
+            } catch (err) {
+                console.error("Gagal Validasi:", err);
+                errorMessage.innerText = "Gagal terhubung ke server. Pastikan URL Apps Script sudah benar.";
+                errorMessage.classList.remove("hidden");
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.innerText = 'Mulai Kerjakan Soal';
+            }
+        }
+
+        function cleanStr(str) {
+            return str.replace(/\s+/g, '').toLowerCase();
+        }
+
+        // Kalkulasi Skor dan Kirim Jawaban
+        function handleSubmitQuiz(e) {
+            e.preventDefault();
+
+            const ansSubnetMask = document.getElementById("ansSubnetMask").value.trim();
+            const ansNetworkAddress = document.getElementById("ansNetworkAddress").value.trim();
+            const ansBroadcastAddress = document.getElementById("ansBroadcastAddress").value.trim();
+            const ansUsableRange = document.getElementById("ansUsableRange").value.trim();
+            const ansTotalUsableHosts = parseInt(document.getElementById("ansTotalUsableHosts").value.trim(), 10);
+
+            let score = 0;
+            const target = currentQuestion.correct;
+
+            if (cleanStr(ansSubnetMask) === cleanStr(target.subnetMask)) score += 20;
+            if (cleanStr(ansNetworkAddress) === cleanStr(target.networkAddress)) score += 20;
+            if (cleanStr(ansBroadcastAddress) === cleanStr(target.broadcastAddress)) score += 20;
+            if (cleanStr(ansUsableRange) === cleanStr(target.usableRange)) score += 20;
+            if (ansTotalUsableHosts === target.totalHosts) score += 20;
+
+            const submitBtn = document.getElementById("submitBtn");
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Mengirim Jawaban... <span class="loading-spinner"></span>';
+
+            const payload = {
+                timestamp: new Date().toLocaleString("id-ID"),
+                nama: currentUser.name,
+                nis: currentUser.nis,
+                kategoriNis: currentUser.tipeNis,
+                kodeSoal: currentQuestion.id,
+                nilai: score,
+                jawabanSubnetMask: ansSubnetMask,
+                jawabanNetwork: ansNetworkAddress,
+                jawabanBroadcast: ansBroadcastAddress,
+                jawabanRange: ansUsableRange,
+                jawabanTotalHost: ansTotalUsableHosts
+            };
+
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            })
+            .then(() => showResult(score))
+            .catch(err => {
+                console.error("Gagal mengirim:", err);
+                showResult(score);
+            });
+        }
+
+        function showResult(score) {
+            document.getElementById("quizSection").classList.add("hidden");
+            document.getElementById("resultSection").classList.remove("hidden");
+            document.getElementById("finalScore").innerText = `${score} / 100`;
+        }
+    </script>
+</body>
+</html>
