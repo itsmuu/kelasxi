@@ -169,6 +169,38 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        /* --- STYLES UNTUK WELCOME LOADING SCREEN --- */
+        .welcome-img {
+            max-width: 320px;
+            width: 100%;
+            height: auto;
+            margin: 0 auto 20px;
+            display: block;
+        }
+
+        .loading-bar-container {
+            width: 100%;
+            max-width: 320px;
+            height: 8px;
+            background-color: #e2e8f0;
+            border-radius: 10px;
+            margin: 24px auto 0;
+            overflow: hidden;
+        }
+
+        .loading-bar-progress {
+            width: 0%;
+            height: 100%;
+            background-color: #007bff;
+            border-radius: 10px;
+            animation: fillProgress 2.5s ease-in-out forwards;
+        }
+
+        @keyframes fillProgress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -190,10 +222,25 @@
             <form id="loginForm" onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label for="studentNis">Nomor Induk Siswa (NIS)</label>
-                    <input type="number" id="studentNis" placeholder="Masukkan NIS tanpa strip (-) " required>
+                    <input type="text" id="studentNis" placeholder="Masukkan NIS terdaftar (contoh: 25-13715)" required>
                 </div>
                 <button type="submit" id="loginBtn" class="btn">Mulai Kerjakan Soal</button>
             </form>
+        </div>
+
+        <!-- SECTION 1.5: WELCOME LOADING SCREEN -->
+        <div id="welcomeSection" class="card result-card hidden">
+            <img src="undraw_welcome-cats_tw36.png" alt="Welcome" class="welcome-img">
+            <h2 style="font-size: 26px; color: #1e293b; margin-bottom: 8px;">
+                Selamat Mengerjakan, <span id="studentWelcomeName" style="color: #007bff;">Siswa</span>!
+            </h2>
+            <p style="color: #64748b; font-size: 15px;">
+                Sistem sedang menyiapkan soal latihan untuk Anda...
+            </p>
+
+            <div class="loading-bar-container">
+                <div class="loading-bar-progress"></div>
+            </div>
         </div>
 
         <!-- SECTION 2: SOAL SUBNETTING -->
@@ -224,7 +271,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="ansBroadcastAddress">3. Broadcast Address (IP Broadcas)</label>
+                    <label for="ansBroadcastAddress">3. Broadcast Address (IP Broadcast)</label>
                     <input type="text" id="ansBroadcastAddress" placeholder="Contoh: 192.168.10.63" required>
                 </div>
 
@@ -260,7 +307,7 @@
 
     <script>
         // =========================================================================
-        // PASTEKAN WEB APP URL GOOGLE APPS SCRIPT ANDA DI SINI
+        // URL WEB APP GOOGLE APPS SCRIPT ANDA
         // =========================================================================
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwfb2-2IyY7Ylkp_dMdjJv_tGDNMbTF-PRENvxMXxiNHplA2MK9gA76pvPpBjwYspwDug/exec";
 
@@ -319,7 +366,7 @@
         let currentUser = { name: "", nis: "", tipeNis: "" };
         let currentQuestion = null;
 
-        // Validasi NIS via Spreadsheet
+        // Validasi NIS via Spreadsheet & Tampilkan Loading Screen
         async function handleLogin(e) {
             e.preventDefault();
             const nisInput = document.getElementById("studentNis").value.trim();
@@ -339,8 +386,11 @@
 
                 if (data.status === "success") {
                     const name = data.nama;
-                    const nisNum = parseInt(nisInput, 10);
-                    const isGanjil = nisNum % 2 !== 0;
+                    
+                    // Deteksi angka terakhir untuk Ganjil/Genap
+                    const digitsOnly = nisInput.replace(/\D/g, '');
+                    const lastDigit = parseInt(digitsOnly.slice(-1) || '0', 10);
+                    const isGanjil = lastDigit % 2 !== 0;
                     const tipe = isGanjil ? "ganjil" : "genap";
 
                     // Pilih Soal Acak
@@ -351,6 +401,7 @@
                     currentUser = { name, nis: nisInput, tipeNis: tipe.toUpperCase() };
 
                     // Update UI Tampilan
+                    document.getElementById("studentWelcomeName").innerText = name;
                     document.getElementById("displayStudentInfo").innerText = `${name} (NIS: ${nisInput})`;
                     const badge = document.getElementById("nisBadge");
                     badge.innerText = `NIS ${tipe.toUpperCase()}`;
@@ -359,9 +410,16 @@
                     document.getElementById("questionCategory").innerText = `SOAL KATEGORI NIS ${tipe.toUpperCase()} (KODE: ${currentQuestion.id})`;
                     document.getElementById("questionText").innerHTML = currentQuestion.text;
 
-                    // Pindah Tampilan
+                    // Hide Form Login -> Show Welcome Screen
                     document.getElementById("loginSection").classList.add("hidden");
-                    document.getElementById("quizSection").classList.remove("hidden");
+                    document.getElementById("welcomeSection").classList.remove("hidden");
+
+                    // Tampilkan halaman soal setelah animasi loading (2.5 detik)
+                    setTimeout(() => {
+                        document.getElementById("welcomeSection").classList.add("hidden");
+                        document.getElementById("quizSection").classList.remove("hidden");
+                    }, 2500);
+
                 } else {
                     errorMessage.innerText = data.message || "NIS tidak terdaftar!";
                     errorMessage.classList.remove("hidden");
