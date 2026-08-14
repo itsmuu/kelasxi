@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modul Teori: Pengalamatan IP & Subnetting CIDR</title>
+    <!-- Component Navbar Sticky (Opsional, menyesuaikan template Anda) -->
+    <script src="navbar.js" defer></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header-card {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 20px rgba(0, 123, 255, 0.15);
+        }
+
+        .header-card h1 {
+            margin: 0 0 10px 0;
+            font-size: 28px;
+        }
+
+        .header-card p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 24px;
+        }
+
+        h2 {
+            color: #1e293b;
+            margin-top: 0;
+            font-size: 22px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .badge-num {
+            background: #007bff;
+            color: white;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .analogy-box {
+            background: #f0f9ff;
+            border-left: 4px solid #0284c7;
+            padding: 16px 20px;
+            border-radius: 0 12px 12px 0;
+            margin: 16px 0;
+            font-size: 15px;
+        }
+
+        .analogy-box strong {
+            color: #0369a1;
+        }
+
+        .formula-box {
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            color: #0f172a;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+            font-size: 15px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .highlight {
+            background-color: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #92400e;
+        }
+
+        code {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #2563eb;
+            font-family: monospace;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Component Navbar (Opsional) -->
+    <my-navbar></my-navbar>
+
+    <div class="container">
+        
+        <!-- Header Utama -->
+        <div class="header-card">
+            <h1>Modul Pembelajaran: Konsep IP Address & Subnetting CIDR</h1>
+            <p>Panduan teori fundamental pengalamatan jaringan komputer untuk kelas Teknik Komputer dan Jaringan (TKJ).</p>
+        </div>
+
+        <!-- 1. IP Address -->
+        <div class="card">
+            <h2><span class="badge-num">1</span> IP Address (Alamat IP)</h2>
+            <p><strong>IP Address (Internet Protocol Address)</strong> adalah deretan angka biner (atau angka desimal) unik yang diidentifikasikan ke setiap perangkat (seperti PC, Laptop, Smartphone, Router) yang terhubung ke jaringan berbasis protokol TCP/IP.</p>
+            
+            <div class="analogy-box">
+                <strong>Analogi Guru:</strong> Bayangkan IP Address seperti <strong>Alamat Rumah Anda</strong>. Tanpa nomor rumah dan nama jalan yang jelas, kurir paket tidak akan bisa mengirimkan barang ke rumah Anda. Begitu pula data di internet tidak akan sampai ke komputer Anda tanpa IP Address.
+            </div>
+
+            <p>Pada IPv4, alamat terdiri dari <strong>32 bit biner</strong> yang dibagi menjadi 4 bagian (oktet), di mana setiap oktet dipisahkan oleh tanda titik (<em>dot-decimal notation</em>). Contoh: <code>192.168.10.1</code>.</p>
+        </div>
+
+        <!-- 2. Subnet Mask & Prefix CIDR -->
+        <div class="card">
+            <h2><span class="badge-num">2</span> Subnet Mask & Prefix CIDR</h2>
+            <p><strong>Subnet Mask</strong> adalah angka 32-bit yang membedakan mana bagian dari IP Address yang berfungsi sebagai <strong>Network ID</strong> (identitas kelompok jaringan) dan mana yang merupakan <strong>Host ID</strong> (identitas perangkat individu).</p>
+            
+            <p><strong>CIDR (Classless Inter-Domain Routing)</strong> adalah metode penulisan singkat subnet mask menggunakan tanda garis miring (<code>/</code>) diikuti jumlah bit bernilai 1. Contoh: <code>/24</code> berarti terdapat 24 bit angka <code>1</code> di awal subnet mask.</p>
+
+            <div class="analogy-box">
+                <strong>Analogi Guru:</strong> Jika IP Address adalah alamat rumah lengkap, maka Subnet Mask adalah pemisah antara <strong>Nama Komplek Perumahan</strong> (Network ID) dan <strong>Nomor Rumah</strong> (Host ID).
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Prefix CIDR</th>
+                        <th>Subnet Mask (Desimal)</th>
+                        <th>Total IP Address</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>/24</code></td>
+                        <td><code>255.255.255.0</code></td>
+                        <td>256</td>
+                    </tr>
+                    <tr>
+                        <td><code>/25</code></td>
+                        <td><code>255.255.255.128</code></td>
+                        <td>128</td>
+                    </tr>
+                    <tr>
+                        <td><code>/26</code></td>
+                        <td><code>255.255.255.192</code></td>
+                        <td>64</td>
+                    </tr>
+                    <tr>
+                        <td><code>/27</code></td>
+                        <td><code>255.255.255.224</code></td>
+                        <td>32</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 3. Network Address -->
+        <div class="card">
+            <h2><span class="badge-num">3</span> Network Address (IP Network)</h2>
+            <p><strong>Network Address</strong> adalah IP pertama dari seluruh rentang alamat dalam satu blok subnet. IP ini digunakan untuk mewakili atau mendefinisikan seluruh grup jaringan tersebut.</p>
+            <ul>
+                <li><strong>Sifat Utama:</strong> Berada di posisi paling awal dalam blok (contoh: <code>192.168.1.0</code> pada <code>/24</code>).</li>
+                <li><strong>Aturan Penting:</strong> Network Address <span class="highlight">TIDAK BISA</span> dipasang/diberikan kepada perangkat host (Komputer, Router, Printer).</li>
+            </ul>
+        </div>
+
+        <!-- 4. Broadcast Address -->
+        <div class="card">
+            <h2><span class="badge-num">4</span> Broadcast Address (IP Broadcast)</h2>
+            <p><strong>Broadcast Address</strong> adalah IP terakhir dari seluruh rentang alamat dalam satu blok subnet. IP ini digunakan untuk mengirimkan paket data ke <strong>seluruh perangkat</strong> yang ada dalam jaringan tersebut secara bersamaan.</p>
+            <ul>
+                <li><strong>Sifat Utama:</strong> Berada di posisi paling akhir dalam blok (contoh: <code>192.168.1.255</code> pada <code>/24</code>).</li>
+                <li><strong>Aturan Penting:</strong> Sama seperti Network Address, IP Broadcast <span class="highlight">TIDAK BISA</span> dipasang pada perangkat host.</li>
+            </ul>
+        </div>
+
+        <!-- 5. Jumlah IP & Jumlah Host -->
+        <div class="card">
+            <h2><span class="badge-num">5</span> Jumlah IP vs Jumlah Host (Usable Host)</h2>
+            <p>Terdapat perbedaan mendasar antara total IP yang tercipta dengan IP yang benar-benar bisa kita pakai untuk perangkat:</p>
+
+            <h3>A. Jumlah Total IP</h3>
+            <p>Jumlah seluruh alamat IP yang ada di dalam satu blok subnetting.</p>
+            <div class="formula-box">
+                Rumus: Total IP = 2<sup>(32 - CIDR)</sup>
+            </div>
+            <p><em>Contoh untuk CIDR /26:</em> Total IP = 2<sup>(32 - 26)</sup> = 2<sup>6</sup> = <strong>64 IP</strong>.</p>
+
+            <h3>B. Jumlah Host Yang Boleh Digunakan (Usable Host)</h3>
+            <p>Jumlah IP yang benar-benar bisa kita tetapkan ke komputer/laptop. Dikurangi 2 karena IP pertama (Network) dan IP terakhir (Broadcast) dipesan khusus oleh sistem.</p>
+            <div class="formula-box">
+                Rumus: Usable Host = Total IP - 2
+            </div>
+            <p><em>Contoh untuk CIDR /26:</em> Usable Host = 64 - 2 = <strong>62 Host</strong>.</p>
+        </div>
+
+        <!-- 6. Blok Subnet -->
+        <div class="card">
+            <h2><span class="badge-num">6</span> Blok Subnet (Subnet Block)</h2>
+            <p><strong>Blok Subnet</strong> adalah ukuran kelipatan pembagian jaringan dalam satu rentang IP Address. Blok subnet menentukan di mana jaringan dimulai, berpindah, dan berakhir.</p>
+
+            <div class="formula-box">
+                Rumus Blok Subnet = 256 - (Nilai Oktet Terakhir Subnet Mask)
+            </div>
+
+            <p><strong>Studi Kasus Ringkas:</strong> Hitung parameter subnetting dari IP <code>192.168.1.50/26</code>!</p>
+            <ol>
+                <li><strong>Subnet Mask /26:</strong> <code>255.255.255.192</code></li>
+                <li><strong>Hitung Blok Subnet:</strong> 256 - 192 = <span class="highlight">64</span>.</li>
+                <li><strong>Daftar Kelipatan Blok:</strong> 0, 64, 128, 192.</li>
+                <li><strong>Posisi IP 192.168.1.50:</strong> Berada di antara 0 dan 64 (Blok Ke-1: 0 sampai 63).</li>
+            </ol>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Hasil Perhitungan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Network Address</td>
+                        <td><code>192.168.1.0</code> (IP Pertama)</td>
+                    </tr>
+                    <tr>
+                        <td>Broadcast Address</td>
+                        <td><code>192.168.1.63</code> (IP Terakhir sebelum 64)</td>
+                    </tr>
+                    <tr>
+                        <td>Range IP Host</td>
+                        <td><code>192.168.1.1</code> s/d <code>192.168.1.62</code></td>
+                    </tr>
+                    <tr>
+                        <td>Total Host Boleh Pakai</td>
+                        <td>62 Host</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</body>
+</html>

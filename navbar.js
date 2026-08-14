@@ -129,6 +129,7 @@ class MyNavbar extends HTMLElement {
             <!-- Menu Navigation -->
             <ul class="navbar-links">
                 <li><a href="index.html">Home</a></li>
+                <li><a href="teori.html">Teori</a></li>
                 <li><a href="subnetting.html">Subnetting</a></li>
             </ul>
         </nav>
