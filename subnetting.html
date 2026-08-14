@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Latihan Subnetting CIDR</title>
+    <title>Latihan Subnetting CIDR Kompleks</title>
     <!-- Component Navbar Sticky -->
     <script src="navbar.js" defer></script>
     <style>
@@ -170,7 +170,7 @@
             to { transform: rotate(360deg); }
         }
 
-        /* --- STYLES UNTUK WELCOME LOADING SCREEN --- */
+        /* --- WELCOME LOADING SCREEN --- */
         .welcome-img {
             max-width: 320px;
             width: 100%;
@@ -214,7 +214,7 @@
         <div id="loginSection" class="card">
             <h2>Login Siswa</h2>
             <p style="color: #64748b; font-size: 14px; margin-bottom: 20px;">
-                Masukkan NIS Anda untuk verifikasi data.
+                Masukkan NIS Anda untuk verifikasi data dan mengambil soal.
             </p>
             
             <div id="errorMessage" class="error-box hidden"></div>
@@ -235,7 +235,7 @@
                 Selamat Mengerjakan, <span id="studentWelcomeName" style="color: #007bff;">Siswa</span>!
             </h2>
             <p style="color: #64748b; font-size: 15px;">
-                Sistem sedang menyiapkan soal latihan untuk Anda...
+                Sistem sedang mengacak soal tingkat lanjut untuk Anda...
             </p>
 
             <div class="loading-bar-container">
@@ -252,7 +252,7 @@
                 <span id="nisBadge" class="badge">GANJIL</span>
             </div>
 
-            <h2>Soal Latihan Subnetting CIDR</h2>
+            <h2>Soal Latihan Subnetting CIDR (Tingkat Lanjut)</h2>
             
             <div class="question-box">
                 <span id="questionCategory" style="font-weight: 600; color: #007bff; font-size: 13px; display: block; margin-bottom: 4px;">KATEGORI GANJIL</span>
@@ -262,27 +262,27 @@
             <form id="quizForm" onsubmit="handleSubmitQuiz(event)">
                 <div class="form-group">
                     <label for="ansSubnetMask">1. Subnet Mask (Decimal)</label>
-                    <input type="text" id="ansSubnetMask" placeholder="Contoh: 255.255.255.192" required>
+                    <input type="text" id="ansSubnetMask" placeholder="Contoh: 255.255.248.0" required>
                 </div>
 
                 <div class="form-group">
                     <label for="ansNetworkAddress">2. Network Address (IP Network)</label>
-                    <input type="text" id="ansNetworkAddress" placeholder="Contoh: 192.168.10.0" required>
+                    <input type="text" id="ansNetworkAddress" placeholder="Contoh: 172.20.136.0" required>
                 </div>
 
                 <div class="form-group">
                     <label for="ansBroadcastAddress">3. Broadcast Address (IP Broadcast)</label>
-                    <input type="text" id="ansBroadcastAddress" placeholder="Contoh: 192.168.10.63" required>
+                    <input type="text" id="ansBroadcastAddress" placeholder="Contoh: 172.20.143.255" required>
                 </div>
 
                 <div class="form-group">
                     <label for="ansUsableRange">4. Range IP Host Yang Bisa Digunakan (Range Host)</label>
-                    <input type="text" id="ansUsableRange" placeholder="Contoh: 192.168.10.1 - 192.168.10.62" required>
+                    <input type="text" id="ansUsableRange" placeholder="Contoh: 172.20.136.1 - 172.20.143.254" required>
                 </div>
 
                 <div class="form-group">
                     <label for="ansTotalUsableHosts">5. Jumlah Total Host Yang Boleh Digunakan</label>
-                    <input type="number" id="ansTotalUsableHosts" placeholder="Contoh: 62" required>
+                    <input type="number" id="ansTotalUsableHosts" placeholder="Contoh: 2046" required>
                 </div>
 
                 <button type="submit" id="submitBtn" class="btn">Kirim Jawaban</button>
@@ -311,53 +311,97 @@
         // =========================================================================
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwfb2-2IyY7Ylkp_dMdjJv_tGDNMbTF-PRENvxMXxiNHplA2MK9gA76pvPpBjwYspwDug/exec";
 
-        // Bank Soal Subnetting CIDR
+        // Bank Soal Subnetting CIDR Kompleks & Teracak
         const bankSoal = {
             ganjil: [
                 {
-                    id: "G1",
-                    text: "Sebuah jaringan komputer memiliki alokasi IP Address <strong>192.168.10.0/26</strong>. Tentukan paramater subnetting di bawah ini:",
+                    id: "G1-ADV",
+                    text: "Sebuah host pada jaringan core router memiliki IP Address <strong>172.20.142.85/21</strong>. Analisis dan hitunglah parameter subnetting lengkap untuk subnet dari host tersebut:",
                     correct: {
-                        subnetMask: "255.255.255.192",
-                        networkAddress: "192.168.10.0",
-                        broadcastAddress: "192.168.10.63",
-                        usableRange: "192.168.10.1 - 192.168.10.62",
-                        totalHosts: 62
+                        subnetMask: "255.255.248.0",
+                        networkAddress: "172.20.136.0",
+                        broadcastAddress: "172.20.143.255",
+                        usableRange: "172.20.136.1 - 172.20.143.254",
+                        totalHosts: 2046
                     }
                 },
                 {
-                    id: "G2",
-                    text: "Diberikan Alamat IP <strong>172.16.5.0/28</strong> untuk konfigurasi VLAN. Hitunglah parameter subnetting berikut:",
+                    id: "G2-ADV",
+                    text: "Sebuah server terhubung ke switch dengan IP <strong>192.168.45.198/29</strong>. Carilah informasi subnetting tempat server tersebut terhubung:",
                     correct: {
-                        subnetMask: "255.255.255.240",
-                        networkAddress: "172.16.5.0",
-                        broadcastAddress: "172.16.5.15",
-                        usableRange: "172.16.5.1 - 172.16.5.14",
-                        totalHosts: 14
+                        subnetMask: "255.255.255.248",
+                        networkAddress: "192.168.45.192",
+                        broadcastAddress: "192.168.45.199",
+                        usableRange: "192.168.45.193 - 192.168.45.198",
+                        totalHosts: 6
+                    }
+                },
+                {
+                    id: "G3-ADV",
+                    text: "Sistem Data Center dialokasikan alamat IP <strong>10.88.170.210/19</strong>. Tentukan konfigurasi parameternya:",
+                    correct: {
+                        subnetMask: "255.255.224.0",
+                        networkAddress: "10.88.160.0",
+                        broadcastAddress: "10.88.191.255",
+                        usableRange: "10.88.160.1 - 10.88.191.254",
+                        totalHosts: 8190
+                    }
+                },
+                {
+                    id: "G4-ADV",
+                    text: "Interface router ISP memiliki IP Address <strong>172.31.99.14/23</strong>. Hitung parameter batas subnetting dari alokasi tersebut:",
+                    correct: {
+                        subnetMask: "255.255.254.0",
+                        networkAddress: "172.31.98.0",
+                        broadcastAddress: "172.31.99.255",
+                        usableRange: "172.31.98.1 - 172.31.99.254",
+                        totalHosts: 510
                     }
                 }
             ],
             genap: [
                 {
-                    id: "E1",
-                    text: "Server kantor menggunakan IP Address dengan Prefix CIDR <strong>192.168.1.0/27</strong>. Tentukan analisis subnetting berikut:",
+                    id: "E1-ADV",
+                    text: "Komputer administrator jaringan terkonfigurasi IP <strong>172.16.75.200/22</strong>. Tentukan parameter batas jaringan dari IP tersebut:",
+                    correct: {
+                        subnetMask: "255.255.252.0",
+                        networkAddress: "172.16.72.0",
+                        broadcastAddress: "172.16.75.255",
+                        usableRange: "172.16.72.1 - 172.16.75.254",
+                        totalHosts: 1022
+                    }
+                },
+                {
+                    id: "E2-ADV",
+                    text: "Suatu Access Point dialokasikan IP Address <strong>192.168.100.142/27</strong>. Analisis parameter subnetting lengkapnya:",
                     correct: {
                         subnetMask: "255.255.255.224",
-                        networkAddress: "192.168.1.0",
-                        broadcastAddress: "192.168.1.31",
-                        usableRange: "192.168.1.1 - 192.168.1.30",
+                        networkAddress: "192.168.100.128",
+                        broadcastAddress: "192.168.100.159",
+                        usableRange: "192.168.100.129 - 192.168.100.158",
                         totalHosts: 30
                     }
                 },
                 {
-                    id: "E2",
-                    text: "Gedung A dialokasikan Network IP <strong>10.0.0.0/29</strong> untuk perangkat Point-to-Point. Hitung parameter berikut:",
+                    id: "E3-ADV",
+                    text: "Node jaringan cloud dialokasikan IP <strong>10.200.215.50/18</strong>. Hitung parameter subnetting lengkap dari segmen ini:",
                     correct: {
-                        subnetMask: "255.255.255.248",
-                        networkAddress: "10.0.0.0",
-                        broadcastAddress: "10.0.0.7",
-                        usableRange: "10.0.0.1 - 10.0.0.6",
-                        totalHosts: 6
+                        subnetMask: "255.255.192.0",
+                        networkAddress: "10.200.192.0",
+                        broadcastAddress: "10.200.255.255",
+                        usableRange: "10.200.192.1 - 10.200.255.254",
+                        totalHosts: 16382
+                    }
+                },
+                {
+                    id: "E4-ADV",
+                    text: "IP Kamera Pengawas (CCTV) dikonfigurasi dengan alamat <strong>172.25.10.185/26</strong>. Tentukan seluruh parameter subnetting-nya:",
+                    correct: {
+                        subnetMask: "255.255.255.192",
+                        networkAddress: "172.25.10.128",
+                        broadcastAddress: "172.25.10.191",
+                        usableRange: "172.25.10.129 - 172.25.10.190",
+                        totalHosts: 62
                     }
                 }
             ]
@@ -387,13 +431,13 @@
                 if (data.status === "success") {
                     const name = data.nama;
                     
-                    // Deteksi angka terakhir untuk Ganjil/Genap
+                    // Deteksi angka terakhir dari NIS untuk menentukan Ganjil / Genap
                     const digitsOnly = nisInput.replace(/\D/g, '');
                     const lastDigit = parseInt(digitsOnly.slice(-1) || '0', 10);
                     const isGanjil = lastDigit % 2 !== 0;
                     const tipe = isGanjil ? "ganjil" : "genap";
 
-                    // Pilih Soal Acak
+                    // Pilih Soal Acak dari Bank Soal
                     const listSoal = bankSoal[tipe];
                     const randomIndex = Math.floor(Math.random() * listSoal.length);
                     currentQuestion = listSoal[randomIndex];
