@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latihan Subnetting CIDR Dinamis</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            min-height: 100vh;
+            /* Layout vertical: Container di tengah halaman */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Container mengambil sisa ruang vertikal & menengahkan Card */
+        .container {
+            width: 100%;
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1; /* Mengisi sisa tinggi layar */
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Menengahkan card secara vertikal */
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 24px;
+            width: 100%;
+        }
+
+        h2, h3 {
+            margin-top: 0;
+            color: #1e293b;
+        }
+
+        /* --- STYLES KHUSUS LOGIN SPLIT RESPONSIVE --- */
+        .login-card-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .login-form-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-illustration {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            border-radius: 20px;
+            overflow: hidden;
+            min-height: 260px;
+            background: linear-gradient(135deg, #eef4ff 0%, #dbeafe 45%, #e0f2fe 100%);
+            box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.08);
+        }
+
+        /* Soft moving glow blobs behind the network illustration */
+        .login-illustration::before,
+        .login-illustration::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(30px);
+            opacity: 0.55;
+            pointer-events: none;
+        }
+
+        .login-illustration::before {
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.45), transparent 70%);
+            top: -40px;
+            left: -30px;
+            animation: blobFloat1 7s ease-in-out infinite;
+        }
+
+        .login-illustration::after {
+            width: 160px;
+            height: 160px;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.4), transparent 70%);
+            bottom: -30px;
+            right: -20px;
+            animation: blobFloat2 8s ease-in-out infinite;
+        }
+
+        @keyframes blobFloat1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(20px, 15px) scale(1.15); }
+        }
+
+        @keyframes blobFloat2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-15px, -20px) scale(1.1); }
+        }
+
+        .network-illustration {
+            position: relative;
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            z-index: 1;
+        }
+
+        /* Slow spinning globe grid */
+        .globe-group {
+            animation: globeSpin 22s linear infinite;
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+
+        @keyframes globeSpin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Orbit rings spinning at different speeds/directions for parallax */
+        .orbit-ring-1 {
+            animation: orbitSpin 9s linear infinite;
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+
+        .orbit-ring-2 {
+            animation: orbitSpinReverse 14s linear infinite;
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+
+        @keyframes orbitSpin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes orbitSpinReverse {
+            to { transform: rotate(-360deg); }
+        }
+
+        /* Glowing connection markers pulsing on the globe surface */
+        .globe-marker {
+            animation: markerPulse 2.2s ease-in-out infinite;
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+
+        .globe-marker.m1 { animation-delay: 0s; }
+        .globe-marker.m2 { animation-delay: 0.5s; }
+        .globe-marker.m3 { animation-delay: 1s; }
+        .globe-marker.m4 { animation-delay: 1.5s; }
+
+        @keyframes markerPulse {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+
+        /* Whole globe gently bobbing */
+        .globe-float {
+            animation: globeBob 4.5s ease-in-out infinite;
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+
+        @keyframes globeBob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        /* Binary packets rising from the device into the globe */
+        .up-packet {
+            opacity: 0;
+            animation: upPacketTravel 3s ease-in infinite;
+        }
+
+        .up-packet.u1 { animation-delay: 0s; }
+        .up-packet.u2 { animation-delay: 1s; }
+        .up-packet.u3 { animation-delay: 2s; }
+
+        @keyframes upPacketTravel {
+            0% { opacity: 0; transform: translateY(0) scale(0.7); }
+            15% { opacity: 1; transform: translateY(-10px) scale(1); }
+            85% { opacity: 1; transform: translateY(-70px) scale(1); }
+            100% { opacity: 0; transform: translateY(-82px) scale(0.7); }
+        }
+
+        /* Ambient floating binary digits for a "digital" atmosphere */
+        .bit-float {
+            animation: bitDrift 6s ease-in-out infinite;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+
+        .bit-float.b1 { animation-delay: 0s; }
+        .bit-float.b2 { animation-delay: 1.5s; }
+        .bit-float.b3 { animation-delay: 3s; }
+        .bit-float.b4 { animation-delay: 4.5s; }
+
+        @keyframes bitDrift {
+            0%, 100% { opacity: 0; transform: translateY(0); }
+            50% { opacity: 0.55; transform: translateY(-10px); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .login-illustration::before,
+            .login-illustration::after,
+            .globe-group,
+            .orbit-ring-1,
+            .orbit-ring-2,
+            .globe-marker,
+            .globe-float,
+            .up-packet,
+            .bit-float {
+                animation: none !important;
+                opacity: 1 !important;
+            }
+        }
+
+        /* Responsive Breakpoint (Tablet & Mobile) */
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+            .card {
+                padding: 24px;
+            }
+            .login-card-content {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            .login-illustration {
+                order: -1;
+                min-height: 200px;
+            }
+            .network-illustration {
+                max-width: 220px;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #475569;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 13px 18px;
+            border: 1px solid #cbd5e1;
+            border-radius: 14px;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.15);
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            background-color: #94a3b8;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* --- STYLING KHUSUS TOMBOL MULAI (LOGIN) --- */
+        #loginBtn {
+            position: relative;
+            width: auto;
+            min-width: 160px;
+            align-self: flex-start;
+            padding: 14px 32px;
+            border-radius: 99px; /* Rounded super mulus / pill shape */
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 55%, #0ea5e9 100%);
+            background-size: 200% 200%;
+            background-position: 0% 50%;
+            letter-spacing: 0.3px;
+            overflow: hidden;
+            transition: background-position 0.4s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.28);
+        }
+
+        #loginBtn:hover {
+            background-position: 100% 50%;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(37, 99, 235, 0.4);
+        }
+
+        #loginBtn:active {
+            transform: translateY(0);
+            box-shadow: 0 3px 10px rgba(37, 99, 235, 0.25);
+        }
+
+        #loginBtn:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3), 0 10px 24px rgba(37, 99, 235, 0.35);
+        }
+
+        /* Full width & centered on small screens for a comfortable tap target */
+        @media (max-width: 768px) {
+            #loginBtn {
+                align-self: stretch;
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        /* Status Badge User */
+        .user-info-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .user-info-bar span {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e40af;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-ganjil { background: #fef3c7; color: #92400e; }
+        .badge-genap { background: #dcfce7; color: #166534; }
+
+        /* Question Box */
+        .question-box {
+            background: #f1f5f9;
+            border-left: 4px solid #007bff;
+            padding: 16px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 24px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .result-card {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .score-display {
+            font-size: 48px;
+            font-weight: bold;
+            color: #007bff;
+            margin: 16px 0;
+        }
+
+        .error-box {
+            color: #dc2626;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* --- WELCOME LOADING SCREEN --- */
+        .welcome-img {
+            max-width: 320px;
+            width: 100%;
+            height: auto;
+            margin: 0 auto 20px;
+            display: block;
+        }
+
+        .loading-bar-container {
+            width: 100%;
+            max-width: 320px;
+            height: 8px;
+            background-color: #e2e8f0;
+            border-radius: 10px;
+            margin: 24px auto 0;
+            overflow: hidden;
+        }
+
+        .loading-bar-progress {
+            width: 0%;
+            height: 100%;
+            background-color: #007bff;
+            border-radius: 10px;
+            animation: fillProgress 2.5s ease-in-out forwards;
+        }
+
+        @keyframes fillProgress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<my-navbar></my-navbar>
+
+    <div class="container">
+        
+        <!-- SECTION 1: LOGIN NIS (SPLIT LAYOUT) -->
+        <div id="loginSection" class="card">
+            <div class="login-card-content">
+                <!-- Sisi Kiri: Form Login -->
+                <div class="login-form-wrapper">
+                    <h2>Login Siswa</h2>
+                    <p style="color: #64748b; font-size: 14px; margin-top: -6px; margin-bottom: 20px; line-height: 1.4;">
+                        Masukkan NIS Anda untuk memulai latihan subnetting.
+                    </p>
+                              
+                    <div id="errorMessage" class="error-box hidden"></div>
+
+                    <form id="loginForm" onsubmit="handleLogin(event)">
+                        <div class="form-group">
+                            <label for="studentNis">Nomor Induk Siswa (NIS)</label>
+                            <input type="text" id="studentNis" placeholder="2513715" required>
+                        </div>
+                        <button type="submit" id="loginBtn" class="btn">Mulai</button>
+                    </form>
+                </div>
+
+                <!-- Sisi Kanan: Ilustrasi Animasi Globe Digital & Transfer Data -->
+                <div class="login-illustration">
+                    <svg class="network-illustration" viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animasi globe digital menerima paket data biner dari perangkat">
+                        <defs>
+                            <radialGradient id="globeGrad" cx="35%" cy="30%" r="75%">
+                                <stop offset="0%" stop-color="#7dd3fc"/>
+                                <stop offset="55%" stop-color="#2563eb"/>
+                                <stop offset="100%" stop-color="#1e3a8a"/>
+                            </radialGradient>
+                            <linearGradient id="beamGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+                                <stop offset="0%" stop-color="#38bdf8" stop-opacity="0"/>
+                                <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.8"/>
+                            </linearGradient>
+                            <linearGradient id="deviceGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#334155"/>
+                                <stop offset="100%" stop-color="#1e293b"/>
+                            </linearGradient>
+                            <radialGradient id="packetGlow" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#e0f2fe"/>
+                                <stop offset="100%" stop-color="#38bdf8"/>
+                            </radialGradient>
+                        </defs>
+
+                        <!-- Ambient floating binary digits -->
+                        <text class="bit-float b1" x="20" y="40" font-size="13" fill="#3b82f6">1</text>
+                        <text class="bit-float b2" x="255" y="55" font-size="12" fill="#0ea5e9">0</text>
+                        <text class="bit-float b3" x="30" y="185" font-size="12" fill="#2563eb">0</text>
+                        <text class="bit-float b4" x="250" y="200" font-size="13" fill="#3b82f6">1</text>
+
+                        <g class="globe-float">
+                            <!-- Outer orbit rings with small satellite nodes -->
+                            <g class="orbit-ring-1">
+                                <ellipse cx="150" cy="95" rx="80" ry="30" fill="none" stroke="#93c5fd" stroke-width="1.5" stroke-dasharray="3 6" opacity="0.55" transform="rotate(-15 150 95)"/>
+                                <circle cx="150" cy="65" r="4" fill="#38bdf8" transform="rotate(-15 150 95)"/>
+                            </g>
+                            <g class="orbit-ring-2">
+                                <ellipse cx="150" cy="95" rx="66" ry="66" fill="none" stroke="#bfdbfe" stroke-width="1.2" stroke-dasharray="2 7" opacity="0.4"/>
+                                <circle cx="216" cy="95" r="3.5" fill="#60a5fa"/>
+                            </g>
+
+                            <!-- Globe -->
+                            <g class="globe-group">
+                                <circle cx="150" cy="95" r="48" fill="url(#globeGrad)"/>
+                                <!-- Latitude lines -->
+                                <ellipse cx="150" cy="95" rx="48" ry="16" fill="none" stroke="#dbeafe" stroke-width="1" opacity="0.55"/>
+                                <ellipse cx="150" cy="95" rx="48" ry="32" fill="none" stroke="#dbeafe" stroke-width="1" opacity="0.4"/>
+                                <line x1="150" y1="47" x2="150" y2="143" stroke="#dbeafe" stroke-width="1" opacity="0.45"/>
+                                <!-- Longitude arcs -->
+                                <ellipse cx="150" cy="95" rx="16" ry="48" fill="none" stroke="#dbeafe" stroke-width="1" opacity="0.55"/>
+                                <ellipse cx="150" cy="95" rx="32" ry="48" fill="none" stroke="#dbeafe" stroke-width="1" opacity="0.4"/>
+                                <!-- Pulsing connection markers -->
+                                <circle class="globe-marker m1" cx="128" cy="76" r="3" fill="#f0f9ff"/>
+                                <circle class="globe-marker m2" cx="172" cy="82" r="3" fill="#f0f9ff"/>
+                                <circle class="globe-marker m3" cx="140" cy="112" r="3" fill="#f0f9ff"/>
+                                <circle class="globe-marker m4" cx="168" cy="115" r="3" fill="#f0f9ff"/>
+                            </g>
+                        </g>
+
+                        <!-- Data beam connecting device to the globe -->
+                        <rect x="146" y="150" width="8" height="45" fill="url(#beamGrad)"/>
+
+                        <!-- Binary packets rising along the beam -->
+                        <g transform="translate(150,192)">
+                            <g class="up-packet u1">
+                                <circle r="9" fill="url(#packetGlow)"/>
+                                <text y="3.5" font-family="monospace" font-size="9" font-weight="bold" fill="#0c4a6e" text-anchor="middle">1</text>
+                            </g>
+                            <g class="up-packet u2">
+                                <circle r="9" fill="url(#packetGlow)"/>
+                                <text y="3.5" font-family="monospace" font-size="9" font-weight="bold" fill="#0c4a6e" text-anchor="middle">0</text>
+                            </g>
+                            <g class="up-packet u3">
+                                <circle r="9" fill="url(#packetGlow)"/>
+                                <text y="3.5" font-family="monospace" font-size="9" font-weight="bold" fill="#0c4a6e" text-anchor="middle">1</text>
+                            </g>
+                        </g>
+
+                        <!-- Device sending the data (laptop) -->
+                        <g transform="translate(100,192)">
+                            <rect x="0" y="0" width="100" height="6" rx="3" fill="url(#deviceGrad)"/>
+                            <path d="M 14 0 L 22 -34 Q 23 -38 28 -38 H 72 Q 77 -38 78 -34 L 86 0 Z" fill="url(#deviceGrad)"/>
+                            <rect x="28" y="-34" width="44" height="26" rx="2" fill="#0c4a6e"/>
+                            <text x="50" y="-18" font-family="monospace" font-size="8" fill="#7dd3fc" text-anchor="middle">01 10</text>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 1.5: WELCOME LOADING SCREEN -->
+        <div id="welcomeSection" class="card result-card hidden">
+            <img src="undraw_welcome-cats_tw36.png" alt="Welcome" class="welcome-img">
+            <h2 style="font-size: 26px; color: #1e293b; margin-bottom: 8px;">
+                Selamat Mengerjakan, <span id="studentWelcomeName" style="color: #007bff;">Siswa</span>!
+            </h2>
+            <p style="color: #64748b; font-size: 15px;">
+                Sistem sedang meng-generate paket soal khusus NIS Anda...
+            </p>
+
+            <div class="loading-bar-container">
+                <div class="loading-bar-progress"></div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: SOAL SUBNETTING -->
+        <div id="quizSection" class="card hidden">
+            <div class="user-info-bar">
+                <div>
+                    <span id="displayStudentInfo">Nama Siswa (NIS: -)</span>
+                </div>
+                <span id="nisBadge" class="badge">GANJIL</span>
+            </div>
+
+            <h2>Soal Latihan Subnetting CIDR</h2>
+            
+            <div class="question-box">
+                <span id="questionCategory" style="font-weight: 600; color: #007bff; font-size: 13px; display: block; margin-bottom: 4px;">KATEGORI GANJIL</span>
+                <span id="questionText">Memuat soal...</span>
+            </div>
+
+            <form id="quizForm" onsubmit="handleSubmitQuiz(event)">
+                <div class="form-group">
+                    <label for="ansSubnetMask">1. Subnet Mask (Decimal)</label>
+                    <input type="text" id="ansSubnetMask" placeholder="Contoh: 255.255.248.0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="ansNetworkAddress">2. Network Address (IP Network)</label>
+                    <input type="text" id="ansNetworkAddress" placeholder="Contoh: 172.20.136.0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="ansBroadcastAddress">3. Broadcast Address (IP Broadcast)</label>
+                    <input type="text" id="ansBroadcastAddress" placeholder="Contoh: 172.20.143.255" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="ansUsableRange">4. Range IP Host Yang Bisa Digunakan (Range Host)</label>
+                    <input type="text" id="ansUsableRange" placeholder="Contoh: 172.20.136.1 - 172.20.143.254" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="ansTotalUsableHosts">5. Jumlah Total Host Yang Boleh Digunakan</label>
+                    <input type="number" id="ansTotalUsableHosts" placeholder="Contoh: 2046" required>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn">Kirim Jawaban</button>
+            </form>
+        </div>
+
+        <!-- SECTION 3: HASIL PENILAIAN -->
+        <div id="resultSection" class="card result-card hidden">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <h2>Jawaban Berhasil Terkirim!</h2>
+            <p style="color: #64748b; font-size: 15px;">Nilai Anda telah otomatis tercatat di Google Sheets.</p>
+            
+            <div class="score-display" id="finalScore">0 / 100</div>
+
+            <button onclick="location.reload()" class="btn" style="max-width: 200px; margin-top: 20px;">Selesai / Kembali</button>
+        </div>
+
+    </div>
+
+    <script>
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwfb2-2IyY7Ylkp_dMdjJv_tGDNMbTF-PRENvxMXxiNHplA2MK9gA76pvPpBjwYspwDug/exec";
+
+        let currentUser = { name: "", nis: "", tipeNis: "" };
+        let currentQuestion = null;
+
+        function numToIp(num) {
+            return [
+                (num >>> 24) & 255,
+                (num >>> 16) & 255,
+                (num >>> 8) & 255,
+                num & 255
+            ].join('.');
+        }
+
+        function generateQuestionFromNis(nisStr, isGanjil) {
+            let seed = 0;
+            for (let i = 0; i < nisStr.length; i++) {
+                seed = (seed << 5) - seed + nisStr.charCodeAt(i);
+                seed |= 0;
+            }
+            seed = Math.abs(seed);
+
+            function nextRandom() {
+                seed = (seed * 9301 + 49297) % 233280;
+                return seed / 233280;
+            }
+
+            const classChoice = Math.floor(nextRandom() * 3);
+            let oct1, oct2, oct3, oct4;
+
+            if (classChoice === 0) {
+                oct1 = 192; oct2 = 168;
+                oct3 = Math.floor(nextRandom() * 200) + 1;
+                oct4 = Math.floor(nextRandom() * 250) + 1;
+            } else if (classChoice === 1) {
+                oct1 = 172;
+                oct2 = Math.floor(nextRandom() * 16) + 16;
+                oct3 = Math.floor(nextRandom() * 200) + 1;
+                oct4 = Math.floor(nextRandom() * 250) + 1;
+            } else {
+                oct1 = 10;
+                oct2 = Math.floor(nextRandom() * 200) + 1;
+                oct3 = Math.floor(nextRandom() * 200) + 1;
+                oct4 = Math.floor(nextRandom() * 250) + 1;
+            }
+
+            const cidrGanjilPool = [19, 21, 23, 25, 27, 29];
+            const cidrGenapPool = [18, 20, 22, 24, 26, 28];
+            const pool = isGanjil ? cidrGanjilPool : cidrGenapPool;
+            const cidr = pool[Math.floor(nextRandom() * pool.length)];
+
+            const ipNum = ((oct1 << 24) | (oct2 << 16) | (oct3 << 8) | oct4) >>> 0;
+            const maskNum = (0xFFFFFFFF << (32 - cidr)) >>> 0;
+            const netNum = (ipNum & maskNum) >>> 0;
+            const broadNum = (netNum | (~maskNum >>> 0)) >>> 0;
+            
+            const firstHostNum = netNum + 1;
+            const lastHostNum = broadNum - 1;
+            const totalHosts = broadNum - netNum - 1;
+
+            const subnetMaskStr = numToIp(maskNum);
+            const netAddrStr = numToIp(netNum);
+            const broadAddrStr = numToIp(broadNum);
+            const usableRangeStr = `${numToIp(firstHostNum)} - ${numToIp(lastHostNum)}`;
+
+            const hostIpStr = `${oct1}.${oct2}.${oct3}.${oct4}/${cidr}`;
+
+            const codeId = `${isGanjil ? 'G' : 'E'}-${nisStr.replace(/\D/g, '').slice(-4)}`;
+
+            return {
+                id: codeId,
+                text: `Sebuah perangkat jaringan dikonfigurasi dengan Alamat IP <strong>${hostIpStr}</strong>. Analisis dan hitunglah seluruh parameter subnetting untuk jaringan tersebut:`,
+                correct: {
+                    subnetMask: subnetMaskStr,
+                    networkAddress: netAddrStr,
+                    broadcastAddress: broadAddrStr,
+                    usableRange: usableRangeStr,
+                    totalHosts: totalHosts
+                }
+            };
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const nisInput = document.getElementById("studentNis").value.trim();
+            const loginBtn = document.getElementById("loginBtn");
+            const errorMessage = document.getElementById("errorMessage");
+
+            if (!nisInput) return;
+
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = 'Memeriksa NIS... <span class="loading-spinner"></span>';
+            errorMessage.classList.add("hidden");
+
+            try {
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?nis=${encodeURIComponent(nisInput)}`);
+                const data = await response.json();
+
+                if (data.status === "success") {
+                    const name = data.nama;
+                    
+                    const digitsOnly = nisInput.replace(/\D/g, '');
+                    const lastDigit = parseInt(digitsOnly.slice(-1) || '0', 10);
+                    const isGanjil = lastDigit % 2 !== 0;
+                    const tipe = isGanjil ? "ganjil" : "genap";
+
+                    currentQuestion = generateQuestionFromNis(nisInput, isGanjil);
+
+                    currentUser = { name, nis: nisInput, tipeNis: tipe.toUpperCase() };
+
+                    document.getElementById("studentWelcomeName").innerText = name;
+                    document.getElementById("displayStudentInfo").innerText = `${name} (NIS: ${nisInput})`;
+                    const badge = document.getElementById("nisBadge");
+                    badge.innerText = `NIS ${tipe.toUpperCase()}`;
+                    badge.className = `badge badge-${tipe}`;
+
+                    document.getElementById("questionCategory").innerText = `SOAL KATEGORI NIS ${tipe.toUpperCase()} (KODE: ${currentQuestion.id})`;
+                    document.getElementById("questionText").innerHTML = currentQuestion.text;
+
+                    document.getElementById("loginSection").classList.add("hidden");
+                    document.getElementById("welcomeSection").classList.remove("hidden");
+
+                    setTimeout(() => {
+                        document.getElementById("welcomeSection").classList.add("hidden");
+                        document.getElementById("quizSection").classList.remove("hidden");
+                    }, 2500);
+
+                } else {
+                    errorMessage.innerText = data.message || "NIS tidak terdaftar!";
+                    errorMessage.classList.remove("hidden");
+                }
+            } catch (err) {
+                console.error("Gagal Validasi:", err);
+                errorMessage.innerText = "Gagal terhubung ke server. Pastikan URL Apps Script sudah benar.";
+                errorMessage.classList.remove("hidden");
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.innerText = 'Mulai';
+            }
+        }
+
+        function cleanStr(str) {
+            return str.replace(/\s+/g, '').toLowerCase();
+        }
+
+        function handleSubmitQuiz(e) {
+            e.preventDefault();
+
+            const ansSubnetMask = document.getElementById("ansSubnetMask").value.trim();
+            const ansNetworkAddress = document.getElementById("ansNetworkAddress").value.trim();
+            const ansBroadcastAddress = document.getElementById("ansBroadcastAddress").value.trim();
+            const ansUsableRange = document.getElementById("ansUsableRange").value.trim();
+            const ansTotalUsableHosts = parseInt(document.getElementById("ansTotalUsableHosts").value.trim(), 10);
+
+            let score = 0;
+            const target = currentQuestion.correct;
+
+            if (cleanStr(ansSubnetMask) === cleanStr(target.subnetMask)) score += 20;
+            if (cleanStr(ansNetworkAddress) === cleanStr(target.networkAddress)) score += 20;
+            if (cleanStr(ansBroadcastAddress) === cleanStr(target.broadcastAddress)) score += 20;
+            if (cleanStr(ansUsableRange) === cleanStr(target.usableRange)) score += 20;
+            if (ansTotalUsableHosts === target.totalHosts) score += 20;
+
+            const submitBtn = document.getElementById("submitBtn");
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Mengirim Jawaban... <span class="loading-spinner"></span>';
+
+            const payload = {
+                timestamp: new Date().toLocaleString("id-ID"),
+                nama: currentUser.name,
+                nis: currentUser.nis,
+                kategoriNis: currentUser.tipeNis,
+                kodeSoal: currentQuestion.id,
+                nilai: score,
+                jawabanSubnetMask: ansSubnetMask,
+                jawabanNetwork: ansNetworkAddress,
+                jawabanBroadcast: ansBroadcastAddress,
+                jawabanRange: ansUsableRange,
+                jawabanTotalHost: ansTotalUsableHosts
+            };
+
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            })
+            .then(() => showResult(score))
+            .catch(err => {
+                console.error("Gagal mengirim:", err);
+                showResult(score);
+            });
+        }
+
+        function showResult(score) {
+            document.getElementById("quizSection").classList.add("hidden");
+            document.getElementById("resultSection").classList.remove("hidden");
+            document.getElementById("finalScore").innerText = `${score} / 100`;
+        }
+    </script>
+<script src="navbar.js"></script>
+</body>
+</html>
