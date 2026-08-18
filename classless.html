@@ -22,6 +22,11 @@
             padding: 0;
         }
 
+        html, body {
+            overflow-x: hidden; /* Mencegah seluruh halaman bocor ke samping */
+            width: 100%;
+        }
+
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background-color: var(--bg-color);
@@ -33,6 +38,7 @@
             max-width: 900px;
             margin: 40px auto;
             padding: 0 20px;
+            width: 100%;
         }
 
         /* Header Section */
@@ -57,11 +63,13 @@
             font-weight: 700;
             color: #0f172a;
             margin-bottom: 8px;
+            word-wrap: break-word;
         }
 
         .page-subtitle {
             color: var(--text-muted);
             font-size: 16px;
+            word-wrap: break-word;
         }
 
         /* Card Content */
@@ -72,6 +80,8 @@
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
             border: 1px solid var(--border-color);
             margin-bottom: 24px;
+            width: 100%;
+            overflow: hidden; /* Mencegah isi kartu meluap keluar */
         }
 
         h2 {
@@ -83,17 +93,21 @@
             gap: 10px;
             border-bottom: 2px solid #f1f5f9;
             padding-bottom: 10px;
+            word-wrap: break-word;
         }
 
         h3 {
             font-size: 17px;
             color: #334155;
             margin: 20px 0 10px 0;
+            word-wrap: break-word;
         }
 
-        p {
+        p, li {
             margin-bottom: 14px;
             color: #334155;
+            overflow-wrap: break-word; /* Mencegah kata panjang membuat bocor */
+            word-wrap: break-word;
         }
 
         /* Analogi Box */
@@ -103,6 +117,7 @@
             padding: 16px 20px;
             border-radius: 0 8px 8px 0;
             margin: 16px 0;
+            overflow-wrap: break-word;
         }
 
         .analogy-title {
@@ -111,7 +126,7 @@
             margin-bottom: 6px;
         }
 
-        /* Code/Math Styling */
+        /* Code/Math Styling - Penanganan Teks Biner & Kode */
         code {
             background-color: #f1f5f9;
             color: #0f172a;
@@ -119,6 +134,10 @@
             border-radius: 4px;
             font-family: monospace;
             font-size: 14px;
+            overflow-wrap: anywhere; /* Biner panjang akan otomatis turun di HP */
+            word-break: break-all;
+            display: inline-block;
+            max-width: 100%;
         }
 
         .formula-box {
@@ -128,29 +147,37 @@
             border-radius: 8px;
             margin: 16px 0;
             font-family: monospace;
+            overflow-x: auto;
         }
 
         .formula-item {
             margin-bottom: 8px;
             font-size: 15px;
+            overflow-wrap: break-word;
         }
 
-        /* Table Styling */
+        /* Table Responsive Styling */
         .table-responsive {
-            overflow-x: auto;
+            width: 100%;
+            overflow-x: auto; /* Memungkinkan tabel di-scroll horizontal tanpa membuat body bocor */
+            -webkit-overflow-scrolling: touch;
             margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
         }
 
         table {
             width: 100%;
+            min-width: 500px; /* Menjaga ukuran tabel tetap terbaca di HP */
             border-collapse: collapse;
             text-align: left;
-            font-size: 14.5px;
+            font-size: 14px;
         }
 
         th, td {
-            padding: 12px 16px;
+            padding: 12px 14px;
             border: 1px solid var(--border-color);
+            word-break: normal;
         }
 
         th {
@@ -217,19 +244,50 @@
             margin-bottom: 8px;
         }
 
-        /* Responsive Adjustment */
+        /* Responsive Adjustment untuk HP / Smartphone */
         @media (max-width: 640px) {
             .container {
-                margin: 20px auto;
-                padding: 0 16px;
+                margin: 16px auto;
+                padding: 0 12px;
             }
 
             .card {
-                padding: 20px;
+                padding: 18px 14px;
+                border-radius: 10px;
             }
 
             .page-title {
-                font-size: 24px;
+                font-size: 22px;
+            }
+
+            .page-subtitle {
+                font-size: 14px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+
+            h3 {
+                font-size: 15px;
+            }
+
+            .analogy-box {
+                padding: 12px 14px;
+            }
+
+            .formula-box {
+                padding: 12px;
+            }
+
+            .step-list li {
+                padding-left: 32px;
+            }
+
+            .step-list li::before {
+                width: 22px;
+                height: 22px;
+                font-size: 11px;
             }
         }
     </style>
@@ -260,9 +318,9 @@
             <h2>2. Mengapa Classless IP Dibutuhkan?</h2>
             <p>Pengalamatan sistem Classful lama menimbulkan beberapa masalah fatal di era internet modern:</p>
             <ul style="padding-left: 20px; margin-bottom: 16px; color: #334155;">
-                <li style="margin-bottom: 8px;"><strong>Pemborosan Alokasi IP:</strong> Banyak IP tersisa yang terbuang dalam satu jaringan kelas.</li>
-                <li style="margin-bottom: 8px;"><strong>Krisis Kelangkaan IPv4:</strong> Stok alokasi IPv4 global yang sangat terbatas cepat habis.</li>
-                <li style="margin-bottom: 8px;"><strong>Tabel Routing Membengkak:</strong> Router internet harus menyimpan jutaan baris rute kelas terpisah.</li>
+                <li><strong>Pemborosan Alokasi IP:</strong> Banyak IP tersisa yang terbuang dalam satu jaringan kelas.</li>
+                <li><strong>Krisis Kelangkaan IPv4:</strong> Stok alokasi IPv4 global yang sangat terbatas cepat habis.</li>
+                <li><strong>Tabel Routing Membengkak:</strong> Router internet harus menyimpan jutaan baris rute kelas terpisah.</li>
             </ul>
             <p>Sistem CIDR/Classless IP resmi diperkenalkan pada tahun 1993 untuk mengatasi masalah krisis alokasi IP tersebut.</p>
         </section>
@@ -274,7 +332,7 @@
 
             <h3>Contoh Pembacaan <code>/26</code>:</h3>
             <ul style="padding-left: 20px; color: #334155;">
-                <li>Subnet Mask Biner: <code>11111111.11111111.11111111.11000000</code> (26 bit angka <code>1</code>)</li>
+                <li>Subnet Mask Biner:<br><code>11111111.11111111.11111111.11000000</code></li>
                 <li>Subnet Mask Desimal: <code>255.255.255.192</code></li>
                 <li>Sisa bit <code>0</code> untuk Host ID (h): <code>32 - 26 = 6 bit</code></li>
             </ul>
