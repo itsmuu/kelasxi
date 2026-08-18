@@ -7,7 +7,25 @@
     <!-- Script Component Navbar -->
     <script src="navbar.js" defer></script>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+
     <style>
+        :root {
+            --ink: #0b1220;
+            --body-text: #51607d;
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --cyan: #06b6d4;
+            --bg: #f5f8fc;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --warn: #f59e0b;
+            --danger: #ef4444;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -15,22 +33,60 @@
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: #f8fafc;
-            color: #1e293b;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--ink);
             line-height: 1.6;
         }
 
-        /* Hero Section Styling */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.001ms !important;
+            }
+        }
+
+        /* ===== Hero Section ===== */
         .hero {
-            padding: 60px 24px;
-            max-width: 1200px;
+            position: relative;
+            padding: 60px 24px 90px;
+            max-width: 1240px;
             margin: 0 auto;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 40px;
+            gap: 48px;
             min-height: calc(100vh - 80px);
+            overflow: hidden;
+        }
+
+        /* Ambient background: soft gradient blobs + dot grid */
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: -10% -5%;
+            background:
+                radial-gradient(480px 380px at 82% 18%, rgba(37, 99, 235, 0.13), transparent 70%),
+                radial-gradient(420px 340px at 8% 78%, rgba(6, 182, 212, 0.12), transparent 70%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(37, 99, 235, 0.13) 1px, transparent 1px);
+            background-size: 26px 26px;
+            mask-image: radial-gradient(60% 60% at 70% 35%, #000 5%, transparent 75%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .hero-content, .hero-illustration {
+            position: relative;
+            z-index: 1;
         }
 
         .hero-content {
@@ -42,86 +98,254 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background-color: #eff6ff;
-            color: #2563eb;
-            border: 1px solid #bfdbfe;
-            padding: 6px 14px;
+            background-color: #ffffff;
+            color: var(--primary);
+            border: 1px solid #c7dbfe;
+            padding: 7px 16px;
             border-radius: 20px;
-            font-size: 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
             font-weight: 600;
-            margin-bottom: 20px;
+            letter-spacing: 0.02em;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+            animation: fadeUp 0.6s ease both;
         }
 
         .hero-content h1 {
-            font-size: 42px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 46px;
             font-weight: 800;
-            color: #0f172a;
-            line-height: 1.25;
-            margin-bottom: 18px;
+            color: var(--ink);
+            line-height: 1.18;
+            letter-spacing: -0.01em;
+            margin-bottom: 20px;
+            animation: fadeUp 0.6s ease both;
+            animation-delay: 0.08s;
         }
 
-        .hero-content h1 span {
-            color: #007bff;
+        .hero-content h1 .accent {
+            background: linear-gradient(100deg, var(--primary) 15%, var(--cyan) 85%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .hero-content p {
-            font-size: 18px;
-            color: #64748b;
-            margin-bottom: 32px;
+            font-size: 17px;
+            color: var(--body-text);
+            max-width: 500px;
+            margin-bottom: 34px;
+            animation: fadeUp 0.6s ease both;
+            animation-delay: 0.16s;
         }
 
         .hero-buttons {
             display: flex;
-            gap: 16px;
+            gap: 14px;
             flex-wrap: wrap;
+            animation: fadeUp 0.6s ease both;
+            animation-delay: 0.24s;
         }
 
         .btn {
-            display: inline-block;
-            padding: 14px 28px;
-            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 15px 26px;
+            font-family: 'Inter', sans-serif;
+            font-size: 15.5px;
             font-weight: 600;
-            border-radius: 8px;
+            border-radius: 10px;
             text-decoration: none;
-            transition: all 0.2s ease;
-            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
         }
 
         .btn-primary {
-            background-color: #007bff;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: #ffffff;
-            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.25);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.28);
         }
 
         .btn-primary:hover {
-            background-color: #0056b3;
             transform: translateY(-2px);
+            box-shadow: 0 12px 26px rgba(37, 99, 235, 0.36);
         }
 
         .btn-secondary {
             background-color: #ffffff;
-            color: #475569;
-            border: 1px solid #cbd5e1;
+            color: #334155;
+            border: 1px solid var(--border);
         }
 
         .btn-secondary:hover {
             background-color: #f1f5f9;
-            color: #1e293b;
+            border-color: #cbd5e1;
+            transform: translateY(-2px);
         }
 
-        /* Hero Illustration Styling */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== Illustration ===== */
         .hero-illustration {
             flex: 1;
             display: flex;
             justify-content: center;
+        }
+
+        .illustration-card {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 26px 26px 18px;
+            box-shadow: 0 24px 48px -12px rgba(15, 23, 42, 0.16);
+            animation: floatCard 6s ease-in-out infinite, fadeUp 0.7s ease both;
+            animation-delay: 0s, 0.2s;
+        }
+
+        @keyframes floatCard {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .card-label {
+            display: flex;
             align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .card-label span:first-child {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11.5px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: #94a3b8;
+        }
+
+        .cidr-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--primary);
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 3px 10px;
+            border-radius: 999px;
+        }
+
+        .ip-octets {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--ink);
+            letter-spacing: 0.02em;
+            margin-bottom: 12px;
+        }
+
+        .ip-octets .dim { color: #cbd5e1; }
+
+        /* Bit grid: 32 bits representing the IP address */
+        .bit-grid {
+            display: flex;
+            gap: 3px;
+            margin-bottom: 14px;
+        }
+
+        .bit-octet {
+            display: flex;
+            gap: 2px;
+            padding-right: 5px;
+            border-right: 1px dashed #e2e8f0;
+        }
+
+        .bit-octet:last-child {
+            border-right: none;
+            padding-right: 0;
+        }
+
+        .bit {
+            width: 9px;
+            height: 22px;
+            border-radius: 2.5px;
+            background: var(--primary);
+            opacity: 0;
+            transform: scaleY(0.2);
+            animation: bitIn 0.45s ease forwards;
+            animation-delay: var(--d);
+        }
+
+        .bit.host {
+            background: var(--cyan);
+        }
+
+        @keyframes bitIn {
+            from { opacity: 0; transform: scaleY(0.2); }
+            to { opacity: 1; transform: scaleY(1); }
+        }
+
+        .bit-legend {
+            display: flex;
+            gap: 18px;
+            margin-bottom: 20px;
+        }
+
+        .bit-legend span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12.5px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .bit-legend i {
+            width: 9px;
+            height: 9px;
+            border-radius: 2px;
+            display: inline-block;
+        }
+
+        .bit-legend .net i { background: var(--primary); }
+        .bit-legend .host i { background: var(--cyan); }
+
+        .diagram-divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin-bottom: 4px;
         }
 
         .hero-illustration svg {
             width: 100%;
-            max-width: 500px;
             height: auto;
-            filter: drop-shadow(0 10px 20px rgba(0, 123, 255, 0.1));
+            display: block;
+        }
+
+        /* Node pulse + status blink */
+        .pulse-ring {
+            animation: pulseRing 2.4s ease-out infinite;
+            transform-origin: center;
+        }
+        .pulse-ring.delay {
+            animation-delay: 1.2s;
+        }
+        @keyframes pulseRing {
+            0% { opacity: 0.55; transform: scale(0.6); }
+            100% { opacity: 0; transform: scale(1.6); }
+        }
+
+        .status-dot {
+            animation: dotBlink 2.6s ease-in-out infinite;
+        }
+        @keyframes dotBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.35; }
         }
 
         /* Responsive Breakpoints */
@@ -129,21 +353,19 @@
             .hero {
                 flex-direction: column-reverse;
                 text-align: center;
-                padding: 40px 20px;
+                padding: 40px 20px 60px;
                 min-height: auto;
             }
 
-            .hero-content h1 {
-                font-size: 32px;
-            }
+            .hero-content { max-width: 100%; }
+            .hero-content p { margin-left: auto; margin-right: auto; }
 
-            .hero-content p {
-                font-size: 16px;
-            }
+            .hero-content h1 { font-size: 34px; }
 
-            .hero-buttons {
-                justify-content: center;
-            }
+            .hero-buttons { justify-content: center; }
+
+            .bit-grid, .bit-legend { justify-content: center; }
+            .card-label { text-align: left; }
         }
     </style>
 </head>
@@ -154,13 +376,13 @@
 
     <!-- HERO SECTION -->
     <section class="hero">
-        
+
         <!-- TEKS DAN CTA -->
         <div class="hero-content">
             <div class="badge-hero">
                 <span>🌐</span> Media Pembelajaran Interaktif
             </div>
-            <h1>Kuasai <span>Subnetting CIDR</span> & Jaringan Komputer</h1>
+            <h1>Kuasai <span class="accent">Subnetting CIDR</span> & Jaringan Komputer</h1>
             <p>
                 Platform latihan interaktif untuk menguji pemahaman analisis alokasi IP Address, Subnet Mask, Network, Broadcast, dan jumlah host secara akurat.
             </p>
@@ -170,74 +392,117 @@
             </div>
         </div>
 
-        <!-- ILUSTRASI VEKTOR JARINGAN (SVG) -->
+        <!-- ILUSTRASI: PEMBAGIAN BIT IP + DIAGRAM JARINGAN -->
         <div class="hero-illustration">
-            <svg viewBox="0 0 500 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Background Glow -->
-                <circle cx="250" cy="200" r="160" fill="#E0F2FE" opacity="0.6"/>
-                
-                <!-- Network Connection Lines -->
-                <line x1="250" y1="120" x2="130" y2="230" stroke="#93C5FD" stroke-width="3" stroke-dasharray="6 6"/>
-                <line x1="250" y1="120" x2="370" y2="230" stroke="#93C5FD" stroke-width="3" stroke-dasharray="6 6"/>
-                <line x1="130" y1="230" x2="190" y2="330" stroke="#93C5FD" stroke-width="3"/>
-                <line x1="370" y1="230" x2="310" y2="330" stroke="#93C5FD" stroke-width="3"/>
-                <line x1="130" y1="230" x2="370" y2="230" stroke="#60A5FA" stroke-width="3"/>
+            <div class="illustration-card">
 
-                <!-- Cloud / Router Pusat (Node Utama) -->
-                <g transform="translate(200, 70)">
-                    <rect x="0" y="0" width="100" height="70" rx="16" fill="#007BFF"/>
-                    <path d="M30 40H70M30 30H70M50 20V50" stroke="white" stroke-width="4" stroke-linecap="round"/>
-                    <circle cx="50" cy="35" r="22" stroke="white" stroke-width="3" fill="none"/>
-                </g>
+                <div class="card-label">
+                    <span>Alokasi Alamat IP</span>
+                    <span class="cidr-tag">/26</span>
+                </div>
 
-                <!-- Switch / Server Kiri (Node 2) -->
-                <g transform="translate(80, 195)">
-                    <rect x="0" y="0" width="100" height="60" rx="12" fill="#1E293B"/>
-                    <rect x="15" y="15" width="70" height="10" rx="3" fill="#334155"/>
-                    <circle cx="25" cy="40" r="4" fill="#10B981"/>
-                    <circle cx="40" cy="40" r="4" fill="#10B981"/>
-                    <circle cx="55" cy="40" r="4" fill="#F59E0B"/>
-                    <circle cx="70" cy="40" r="4" fill="#10B981"/>
-                </g>
+                <div class="ip-octets">192<span class="dim">.</span>168<span class="dim">.</span>1<span class="dim">.</span>0</div>
 
-                <!-- Router/Firewall Kanan (Node 3) -->
-                <g transform="translate(320, 195)">
-                    <rect x="0" y="0" width="100" height="60" rx="12" fill="#1E293B"/>
-                    <rect x="15" y="15" width="70" height="10" rx="3" fill="#334155"/>
-                    <circle cx="25" cy="40" r="4" fill="#10B981"/>
-                    <circle cx="40" cy="40" r="4" fill="#10B981"/>
-                    <circle cx="55" cy="40" r="4" fill="#10B981"/>
-                    <circle cx="70" cy="40" r="4" fill="#EF4444"/>
-                </g>
+                <div class="bit-grid" id="bitGrid"></div>
 
-                <!-- Laptop / PC Client Bawah Kiri -->
-                <g transform="translate(150, 300)">
-                    <rect x="10" y="0" width="60" height="40" rx="6" fill="#3B82F6"/>
-                    <rect x="15" y="5" width="50" height="30" rx="3" fill="#EFF6FF"/>
-                    <path d="M0 45C0 42.2386 2.23858 40 5 40H75C77.7614 40 80 42.2386 80 45V48H0V45Z" fill="#94A3B8"/>
-                </g>
+                <div class="bit-legend">
+                    <span class="net"><i></i> Network (26 bit)</span>
+                    <span class="host"><i></i> Host (6 bit)</span>
+                </div>
 
-                <!-- Laptop / PC Client Bawah Kanan -->
-                <g transform="translate(270, 300)">
-                    <rect x="10" y="0" width="60" height="40" rx="6" fill="#3B82F6"/>
-                    <rect x="15" y="5" width="50" height="30" rx="3" fill="#EFF6FF"/>
-                    <path d="M0 45C0 42.2386 2.23858 40 5 40H75C77.7614 40 80 42.2386 80 45V48H0V45Z" fill="#94A3B8"/>
-                </g>
+                <hr class="diagram-divider">
 
-                <!-- Floating Data Packets Animation / Badges -->
-                <g transform="translate(110, 110)">
-                    <rect x="0" y="0" width="90" height="28" rx="14" fill="#FFFFFF" stroke="#E2E8F0"/>
-                    <text x="12" y="18" font-family="sans-serif" font-size="11" font-weight="bold" fill="#007BFF">IP: /26</text>
-                </g>
+                <svg viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Connection lines -->
+                    <line x1="250" y1="45" x2="130" y2="150" stroke="#bfdbfe" stroke-width="2.5" stroke-dasharray="5 5"/>
+                    <line x1="250" y1="45" x2="370" y2="150" stroke="#bfdbfe" stroke-width="2.5" stroke-dasharray="5 5"/>
+                    <line x1="130" y1="150" x2="190" y2="245" stroke="#bfdbfe" stroke-width="2.5"/>
+                    <line x1="370" y1="150" x2="310" y2="245" stroke="#bfdbfe" stroke-width="2.5"/>
 
-                <g transform="translate(300, 110)">
-                    <rect x="0" y="0" width="90" height="28" rx="14" fill="#FFFFFF" stroke="#E2E8F0"/>
-                    <text x="12" y="18" font-family="sans-serif" font-size="11" font-weight="bold" fill="#10B981">192.168.1.0</text>
-                </g>
-            </svg>
+                    <!-- Traveling packets -->
+                    <circle r="4" fill="#2563eb">
+                        <animateMotion dur="2.4s" repeatCount="indefinite" path="M250,45 L130,150"/>
+                    </circle>
+                    <circle r="4" fill="#06b6d4">
+                        <animateMotion dur="2.4s" begin="1.2s" repeatCount="indefinite" path="M250,45 L370,150"/>
+                    </circle>
+                    <circle r="3.5" fill="#2563eb">
+                        <animateMotion dur="1.8s" begin="0.4s" repeatCount="indefinite" path="M130,150 L190,245"/>
+                    </circle>
+                    <circle r="3.5" fill="#06b6d4">
+                        <animateMotion dur="1.8s" begin="1.6s" repeatCount="indefinite" path="M370,150 L310,245"/>
+                    </circle>
+
+                    <!-- Router pusat -->
+                    <circle class="pulse-ring" cx="250" cy="45" r="26" fill="none" stroke="#2563eb" stroke-width="2"/>
+                    <circle class="pulse-ring delay" cx="250" cy="45" r="26" fill="none" stroke="#2563eb" stroke-width="2"/>
+                    <g transform="translate(215, 15)">
+                        <rect x="0" y="0" width="70" height="55" rx="14" fill="#2563eb"/>
+                        <circle cx="35" cy="27" r="15" stroke="white" stroke-width="2.5" fill="none"/>
+                        <path d="M35 12V20M20 27H27M43 27H50M35 34V42" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                    </g>
+
+                    <!-- Switch kiri -->
+                    <g transform="translate(85, 130)">
+                        <rect x="0" y="0" width="90" height="42" rx="10" fill="#0f172a"/>
+                        <rect x="12" y="10" width="66" height="6" rx="2" fill="#334155"/>
+                        <circle class="status-dot" cx="22" cy="30" r="3.2" fill="#10b981"/>
+                        <circle class="status-dot" cx="34" cy="30" r="3.2" fill="#10b981" style="animation-delay:0.3s"/>
+                        <circle class="status-dot" cx="46" cy="30" r="3.2" fill="#f59e0b" style="animation-delay:0.6s"/>
+                        <circle cx="58" cy="30" r="3.2" fill="#10b981"/>
+                    </g>
+
+                    <!-- Switch kanan -->
+                    <g transform="translate(325, 130)">
+                        <rect x="0" y="0" width="90" height="42" rx="10" fill="#0f172a"/>
+                        <rect x="12" y="10" width="66" height="6" rx="2" fill="#334155"/>
+                        <circle cx="22" cy="30" r="3.2" fill="#10b981"/>
+                        <circle class="status-dot" cx="34" cy="30" r="3.2" fill="#10b981" style="animation-delay:0.45s"/>
+                        <circle cx="46" cy="30" r="3.2" fill="#10b981"/>
+                        <circle class="status-dot" cx="58" cy="30" r="3.2" fill="#ef4444" style="animation-delay:0.15s"/>
+                    </g>
+
+                    <!-- Laptop kiri -->
+                    <g transform="translate(155, 235)">
+                        <rect x="6" y="0" width="54" height="34" rx="5" fill="#3b82f6"/>
+                        <rect x="10" y="4" width="46" height="24" rx="3" fill="#eff6ff"/>
+                        <path d="M0 39c0-2.5 2-4.5 4.5-4.5h61c2.5 0 4.5 2 4.5 4.5v2H0v-2z" fill="#94a3b8"/>
+                    </g>
+
+                    <!-- Laptop kanan -->
+                    <g transform="translate(275, 235)">
+                        <rect x="6" y="0" width="54" height="34" rx="5" fill="#3b82f6"/>
+                        <rect x="10" y="4" width="46" height="24" rx="3" fill="#eff6ff"/>
+                        <path d="M0 39c0-2.5 2-4.5 4.5-4.5h61c2.5 0 4.5 2 4.5 4.5v2H0v-2z" fill="#94a3b8"/>
+                    </g>
+                </svg>
+
+            </div>
         </div>
 
     </section>
+
+    <script>
+        // Bangun 32 bit alamat IP (192.168.1.0/26) dengan animasi cascade
+        (function () {
+            const grid = document.getElementById('bitGrid');
+            const networkBits = 26;
+            let bitIndex = 0;
+
+            for (let octet = 0; octet < 4; octet++) {
+                const group = document.createElement('div');
+                group.className = 'bit-octet';
+                for (let b = 0; b < 8; b++) {
+                    const bit = document.createElement('span');
+                    bit.className = 'bit' + (bitIndex < networkBits ? '' : ' host');
+                    bit.style.setProperty('--d', (bitIndex * 0.028) + 's');
+                    group.appendChild(bit);
+                    bitIndex++;
+                }
+                grid.appendChild(group);
+            }
+        })();
+    </script>
 
 </body>
 </html>
