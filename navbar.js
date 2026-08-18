@@ -56,39 +56,50 @@ class MyNavbar extends HTMLElement {
                 cursor: pointer;
                 display: flex;
                 align-items: center;
-                gap: 4px;
+                gap: 6px;
+            }
+
+            /* Style Ikon Panah SVG Lembut */
+            .chevron-icon {
+                width: 14px;
+                height: 14px;
+                fill: none;
+                stroke: currentColor;
+                stroke-width: 2.2;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             }
 
             .dropdown-menu {
                 position: absolute;
-                top: 100%;
+                top: calc(100% + 8px);
                 left: 0;
                 background-color: #ffffff;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-                border-radius: 6px;
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+                border-radius: 8px;
+                border: 1px solid #edf2f7;
                 list-style: none;
-                padding: 8px 0;
-                margin: 8px 0 0 0;
-                min-width: 160px;
+                padding: 6px 0;
+                margin: 0;
+                min-width: 170px;
                 display: none;
                 z-index: 1001;
             }
 
             .dropdown-menu li a {
-                padding: 8px 16px;
+                padding: 9px 18px;
                 display: block;
                 font-weight: 500;
+                font-size: 14.5px;
+                color: #4a5568;
                 white-space: nowrap;
+                transition: background-color 0.15s ease, color 0.15s ease;
             }
 
             .dropdown-menu li a:hover {
                 background-color: #f7fafc;
-            }
-
-            /* Panah Indikator Dropdown */
-            .arrow {
-                font-size: 10px;
-                transition: transform 0.2s ease;
+                color: #007bff;
             }
 
             /* Hover Dropdown untuk Desktop */
@@ -97,7 +108,7 @@ class MyNavbar extends HTMLElement {
                     display: block;
                 }
 
-                .dropdown:hover .arrow {
+                .dropdown:hover .chevron-icon {
                     transform: rotate(180deg);
                 }
             }
@@ -172,6 +183,7 @@ class MyNavbar extends HTMLElement {
                 .dropdown-menu {
                     position: static;
                     box-shadow: none;
+                    border: none;
                     background-color: #f8fafc;
                     width: 100%;
                     text-align: center;
@@ -183,13 +195,14 @@ class MyNavbar extends HTMLElement {
                     display: block;
                 }
 
-                .dropdown.open .arrow {
+                .dropdown.open .chevron-icon {
                     transform: rotate(180deg);
                 }
             }
         </style>
 
         <nav class="navbar-container">
+            <!-- Brand & Icon 4 Kotak Biru -->
             <a href="index.html" class="navbar-brand">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="#007bff">
                     <rect x="3" y="3" width="8" height="8" rx="2.5"/>
@@ -199,18 +212,24 @@ class MyNavbar extends HTMLElement {
                 </svg>
             </a>
 
+            <!-- Tombol Hamburger Garis 3 -->
             <button class="hamburger-btn" aria-label="Toggle navigation">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
 
+            <!-- Menu Navigation -->
             <ul class="navbar-links">
                 <li><a href="index.html">Home</a></li>
                 
+                <!-- Dropdown Menu Teori -->
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle">
-                        Teori <span class="arrow">▼</span>
+                        Teori
+                        <svg class="chevron-icon" viewBox="0 0 24 24">
+                            <path d="M6 9l6 6 6-6"/>
+                        </svg>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="classfull.html">Classfull IP</a></li>
@@ -218,7 +237,20 @@ class MyNavbar extends HTMLElement {
                     </ul>
                 </li>
 
-                <li><a href="subnetting.html">Subnetting</a></li>
+                <!-- Dropdown Menu Latihan -->
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        Latihan
+                        <svg class="chevron-icon" viewBox="0 0 24 24">
+                            <path d="M6 9l6 6 6-6"/>
+                        </svg>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="latihan-classfull.html">Classfull</a></li>
+                        <li><a href="latihan-cidr.html">CIDR</a></li>
+                        <li><a href="latihan-vlsm.html">VLSM</a></li>
+                    </ul>
+                </li>
             </ul>
         </nav>
         `;
@@ -233,12 +265,14 @@ class MyNavbar extends HTMLElement {
         });
 
         // Interaktivitas Klik Dropdown (Khusus Mobile / Touch Screen)
-        const dropdownToggle = this.querySelector('.dropdown-toggle');
-        const dropdown = this.querySelector('.dropdown');
+        const dropdownToggles = this.querySelectorAll('.dropdown-toggle');
 
-        dropdownToggle.addEventListener('click', (e) => {
-            e.preventDefault(); // Mencegah perpindahan halaman langsung
-            dropdown.classList.toggle('open');
+        dropdownToggles.forEach((toggle) => {
+            toggle.addEventListener('click', (e) => {
+                e.preventDefault(); // Mencegah reload/jump ke atas
+                const parentDropdown = toggle.closest('.dropdown');
+                parentDropdown.classList.toggle('open');
+            });
         });
     }
 }
