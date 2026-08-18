@@ -47,6 +47,61 @@ class MyNavbar extends HTMLElement {
                 color: #007bff;
             }
 
+            /* --- Dropdown Styling --- */
+            .dropdown {
+                position: relative;
+            }
+
+            .dropdown-toggle {
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+            }
+
+            .dropdown-menu {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                background-color: #ffffff;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                border-radius: 6px;
+                list-style: none;
+                padding: 8px 0;
+                margin: 8px 0 0 0;
+                min-width: 160px;
+                display: none;
+                z-index: 1001;
+            }
+
+            .dropdown-menu li a {
+                padding: 8px 16px;
+                display: block;
+                font-weight: 500;
+                white-space: nowrap;
+            }
+
+            .dropdown-menu li a:hover {
+                background-color: #f7fafc;
+            }
+
+            /* Panah Indikator Dropdown */
+            .arrow {
+                font-size: 10px;
+                transition: transform 0.2s ease;
+            }
+
+            /* Hover Dropdown untuk Desktop */
+            @media (min-width: 769px) {
+                .dropdown:hover .dropdown-menu {
+                    display: block;
+                }
+
+                .dropdown:hover .arrow {
+                    transform: rotate(180deg);
+                }
+            }
+
             /* --- Tombol Hamburger (Ikon Garis 3) --- */
             .hamburger-btn {
                 display: none;
@@ -105,11 +160,36 @@ class MyNavbar extends HTMLElement {
                 .navbar-links.active {
                     display: flex;
                 }
+
+                /* Menyesuaikan Dropdown di Mobile */
+                .dropdown {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    width: 100%;
+                }
+
+                .dropdown-menu {
+                    position: static;
+                    box-shadow: none;
+                    background-color: #f8fafc;
+                    width: 100%;
+                    text-align: center;
+                    margin-top: 8px;
+                    border-radius: 0;
+                }
+
+                .dropdown.open .dropdown-menu {
+                    display: block;
+                }
+
+                .dropdown.open .arrow {
+                    transform: rotate(180deg);
+                }
             }
         </style>
 
         <nav class="navbar-container">
-            <!-- Brand & Icon 4 Kotak Biru -->
             <a href="index.html" class="navbar-brand">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="#007bff">
                     <rect x="3" y="3" width="8" height="8" rx="2.5"/>
@@ -119,17 +199,25 @@ class MyNavbar extends HTMLElement {
                 </svg>
             </a>
 
-            <!-- Tombol Hamburger Garis 3 -->
             <button class="hamburger-btn" aria-label="Toggle navigation">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
 
-            <!-- Menu Navigation -->
             <ul class="navbar-links">
                 <li><a href="index.html">Home</a></li>
-                <li><a href="teori.html">Teori</a></li>
+                
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        Teori <span class="arrow">▼</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="classfull.html">Classfull IP</a></li>
+                        <li><a href="classless.html">Classless IP</a></li>
+                    </ul>
+                </li>
+
                 <li><a href="subnetting.html">Subnetting</a></li>
             </ul>
         </nav>
@@ -142,6 +230,15 @@ class MyNavbar extends HTMLElement {
         hamburger.addEventListener('click', () => {
             hamburger.classList.toggle('open');
             navLinks.classList.toggle('active');
+        });
+
+        // Interaktivitas Klik Dropdown (Khusus Mobile / Touch Screen)
+        const dropdownToggle = this.querySelector('.dropdown-toggle');
+        const dropdown = this.querySelector('.dropdown');
+
+        dropdownToggle.addEventListener('click', (e) => {
+            e.preventDefault(); // Mencegah perpindahan halaman langsung
+            dropdown.classList.toggle('open');
         });
     }
 }
