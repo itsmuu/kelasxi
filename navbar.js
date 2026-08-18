@@ -2,7 +2,10 @@ class MyNavbar extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
         <style>
-            html, body {
+            /* Cukup di html saja — kalau body ikut diberi overflow-x:hidden,
+               body akan jadi scroll container sendiri dan merusak
+               position: sticky pada navbar */
+            html {
                 overflow-x: hidden;
             }
 
