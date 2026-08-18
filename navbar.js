@@ -2,7 +2,6 @@ class MyNavbar extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
         <style>
-            /* Target langsung tag <my-navbar> agar sticky bekerja presisi */
             my-navbar {
                 display: block;
                 position: sticky;
@@ -31,11 +30,11 @@ class MyNavbar extends HTMLElement {
                 z-index: 1001;
             }
 
-            /* --- Desktop Links --- */
+            /* --- Desktop Nav Links --- */
             .navbar-links {
                 display: flex;
                 align-items: center;
-                gap: 20px;
+                gap: 16px;
                 list-style: none;
                 margin: 0;
                 padding: 0;
@@ -50,14 +49,14 @@ class MyNavbar extends HTMLElement {
                 color: #4a5568;
                 font-weight: 600;
                 font-size: 15px;
-                padding: 8px 12px;
+                padding: 8px 14px;
                 display: flex;
                 align-items: center;
                 gap: 6px;
                 border: none;
                 background: transparent;
                 cursor: pointer;
-                transition: color 0.2s ease;
+                transition: color 0.2s ease, background-color 0.2s ease;
                 border-radius: 6px;
                 box-sizing: border-box;
             }
@@ -75,14 +74,14 @@ class MyNavbar extends HTMLElement {
                 transition: transform 0.25s ease;
             }
 
-            /* Dropdown Content (Desktop Default / Hidden) */
+            /* --- Dropdown Menu Styling --- */
             .dropdown-menu {
                 display: none;
                 position: absolute;
                 top: 100%;
                 left: 0;
                 background-color: #ffffff;
-                min-width: 160px;
+                min-width: 170px;
                 box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
                 border-radius: 8px;
                 border: 1px solid #e2e8f0;
@@ -99,6 +98,7 @@ class MyNavbar extends HTMLElement {
                 color: #334155;
                 display: block;
                 border-radius: 0;
+                white-space: nowrap;
             }
 
             .dropdown-menu a:hover {
@@ -106,7 +106,7 @@ class MyNavbar extends HTMLElement {
                 color: #007bff;
             }
 
-            /* State Aktif Dropdown Desktop */
+            /* Buka Dropdown Saat Memiliki Kelas .open */
             .dropdown-item.open .dropdown-menu {
                 display: block;
             }
@@ -181,7 +181,7 @@ class MyNavbar extends HTMLElement {
                     width: 100%;
                 }
 
-                /* Menambah area ketukan jari (touch-target) di HP */
+                /* Menambah area ketukan jempol di HP agar tidak meleset */
                 .navbar-links a, .dropdown-trigger {
                     width: 100%;
                     padding: 14px 16px;
@@ -190,7 +190,7 @@ class MyNavbar extends HTMLElement {
                     border-bottom: 1px solid #f8fafc;
                 }
 
-                /* Tampilan Dropdown di HP (Accordion Style) */
+                /* Tampilan Accordion Dropdown di HP */
                 .dropdown-menu {
                     position: static;
                     display: none;
@@ -232,8 +232,20 @@ class MyNavbar extends HTMLElement {
 
             <ul class="navbar-links">
                 <li><a href="index.html">Home</a></li>
-                <li><a href="teori.html">Teori</a></li>
                 
+                <li class="dropdown-item">
+                    <button class="dropdown-trigger">
+                        <span>Teori</span>
+                        <svg class="arrow-icon" viewBox="0 0 20 20">
+                            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+                        </svg>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="classfull.html">Classfull IP</a></li>
+                        <li><a href="classless.html">Classless IP</a></li>
+                    </ul>
+                </li>
+
                 <li class="dropdown-item">
                     <button class="dropdown-trigger">
                         <span>Latihan</span>
@@ -242,9 +254,9 @@ class MyNavbar extends HTMLElement {
                         </svg>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a href="classfull.html">Classfull</a></li>
-                        <li><a href="classless.html">CIDR</a></li>
-                        <li><a href="vlsm.html">VLSM</a></li>
+                        <li><a href="latihan-classfull.html">Classfull</a></li>
+                        <li><a href="latihan-cidr.html">CIDR</a></li>
+                        <li><a href="latihan-vlsm.html">VLSM</a></li>
                     </ul>
                 </li>
             </ul>
@@ -254,28 +266,40 @@ class MyNavbar extends HTMLElement {
         // Interactive JavaScript Logic
         const hamburger = this.querySelector('.hamburger-btn');
         const navLinks = this.querySelector('.navbar-links');
-        const dropdownItem = this.querySelector('.dropdown-item');
-        const dropdownTrigger = this.querySelector('.dropdown-trigger');
+        const dropdownItems = this.querySelectorAll('.dropdown-item');
 
-        // Toggle Hamburger Menu
+        // Toggle Hamburger Menu (Buka/Tutup Navigasi Mobile)
         hamburger.addEventListener('click', (e) => {
             e.stopPropagation();
             hamburger.classList.toggle('open');
             navLinks.classList.toggle('active');
         });
 
-        // Toggle Dropdown (Klik pada Tombol / Panah)
-        dropdownTrigger.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dropdownItem.classList.toggle('open');
+        // Toggle Dropdown (Teori & Latihan)
+        dropdownItems.forEach((item) => {
+            const trigger = item.querySelector('.dropdown-trigger');
+
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+
+                // Tutup dropdown lain yang sedang terbuka
+                dropdownItems.forEach((otherItem) => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('open');
+                    }
+                });
+
+                // Buka / Tutup dropdown yang diklik
+                item.classList.toggle('open');
+            });
         });
 
-        // Menutup menu jika mengklik di luar navbar
+        // Menutup menu jika mengklik di luar area navbar
         document.addEventListener('click', (e) => {
             if (!this.contains(e.target)) {
                 navLinks.classList.remove('active');
                 hamburger.classList.remove('open');
-                dropdownItem.classList.remove('open');
+                dropdownItems.forEach((item) => item.classList.remove('open'));
             }
         });
     }
