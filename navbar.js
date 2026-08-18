@@ -2,6 +2,10 @@ class MyNavbar extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
         <style>
+            html, body {
+                overflow-x: hidden;
+            }
+
             my-navbar {
                 display: block;
                 position: sticky;
@@ -80,8 +84,10 @@ class MyNavbar extends HTMLElement {
                 position: absolute;
                 top: 100%;
                 left: 0;
+                right: auto;
                 background-color: #ffffff;
                 min-width: 170px;
+                max-width: calc(100vw - 32px);
                 box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
                 border-radius: 8px;
                 border: 1px solid #e2e8f0;
@@ -89,6 +95,12 @@ class MyNavbar extends HTMLElement {
                 list-style: none;
                 z-index: 1005;
                 margin-top: 4px;
+            }
+
+            /* Dropdown terakhir (paling kanan) dibuka rata kanan supaya tidak keluar layar */
+            .navbar-links li.dropdown-item:last-of-type .dropdown-menu {
+                left: auto;
+                right: 0;
             }
 
             .dropdown-menu a {
@@ -200,6 +212,12 @@ class MyNavbar extends HTMLElement {
                     border-radius: 8px;
                     margin: 4px 0 8px 0;
                     padding: 4px 0;
+                    max-width: none;
+                }
+
+                .navbar-links li.dropdown-item:last-of-type .dropdown-menu {
+                    left: auto;
+                    right: auto;
                 }
 
                 .dropdown-menu a {
@@ -232,7 +250,7 @@ class MyNavbar extends HTMLElement {
 
             <ul class="navbar-links">
                 <li><a href="index.html">Home</a></li>
-                
+
                 <li class="dropdown-item">
                     <button class="dropdown-trigger">
                         <span>Teori</span>
