@@ -49,6 +49,7 @@ class MyNavbar extends HTMLElement {
             }
 
             .navbar-links a, .dropdown-trigger {
+                position: relative;
                 text-decoration: none;
                 color: #4a5568;
                 font-weight: 600;
@@ -66,8 +67,37 @@ class MyNavbar extends HTMLElement {
             }
 
             .navbar-links a:hover, .dropdown-trigger:hover {
-                color: #007bff;
-                background-color: #f8fafc;
+                color: #2563eb;
+                background-color: #eff6ff;
+            }
+
+            /* --- Efek Underline Gradien Saat Hover --- */
+            .navbar-links a::after,
+            .dropdown-trigger::after {
+                content: "";
+                position: absolute;
+                left: 14px;
+                right: 14px;
+                bottom: 4px;
+                height: 2.5px;
+                border-radius: 2px;
+                background: linear-gradient(90deg, #2563eb, #06b6d4);
+                transform: scaleX(0);
+                transform-origin: left;
+                transition: transform 0.25s ease;
+                pointer-events: none;
+            }
+
+            @media (hover: hover) and (pointer: fine) {
+                .navbar-links a:hover::after,
+                .dropdown-trigger:hover::after {
+                    transform: scaleX(1);
+                }
+            }
+
+            /* Underline tetap aktif saat dropdown sedang terbuka */
+            .dropdown-item.open .dropdown-trigger::after {
+                transform: scaleX(1);
             }
 
             /* Ikon Panah Dropdown */
@@ -113,9 +143,13 @@ class MyNavbar extends HTMLElement {
                 white-space: nowrap;
             }
 
+            .dropdown-menu a::after {
+                display: none;
+            }
+
             .dropdown-menu a:hover {
                 background-color: #f1f5f9;
-                color: #007bff;
+                color: #2563eb;
             }
 
             /* Buka Dropdown Saat Memiliki Kelas .open */
@@ -200,6 +234,11 @@ class MyNavbar extends HTMLElement {
                     font-size: 16px;
                     justify-content: space-between;
                     border-bottom: 1px solid #f8fafc;
+                }
+
+                .navbar-links a::after,
+                .dropdown-trigger::after {
+                    display: none;
                 }
 
                 /* Tampilan Accordion Dropdown di HP */
