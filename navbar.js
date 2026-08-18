@@ -16,10 +16,10 @@ class MyNavbar extends HTMLElement {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                max-width: 1100px; /* Membatasi lebar agar tidak terlalu melebar */
+                max-width: 1100px;
                 width: 100%;
-                margin: 0 auto;   /* Memposisikan navbar tepat di tengah */
-                padding: 12px 24px;
+                margin: 0 auto;
+                padding: 8px 24px;
                 box-sizing: border-box;
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             }
@@ -28,14 +28,16 @@ class MyNavbar extends HTMLElement {
                 display: flex;
                 align-items: center;
                 text-decoration: none;
+                padding: 4px 0;
             }
 
             .navbar-links {
                 display: flex;
-                gap: 28px;
+                gap: 16px;
                 list-style: none;
                 margin: 0;
                 padding: 0;
+                align-items: center;
             }
 
             .navbar-links a {
@@ -43,7 +45,14 @@ class MyNavbar extends HTMLElement {
                 color: #4a5568;
                 font-weight: 600;
                 font-size: 15px;
-                transition: color 0.2s ease;
+                transition: color 0.2s ease, background-color 0.2s ease;
+            }
+
+            /* Area klik lebih luas untuk tautan biasa */
+            .navbar-links > li > a:not(.dropdown-toggle) {
+                padding: 8px 12px;
+                border-radius: 6px;
+                display: inline-block;
             }
 
             .navbar-links a:hover {
@@ -55,11 +64,21 @@ class MyNavbar extends HTMLElement {
                 position: relative;
             }
 
+            /* Memperbesar area sentuh/klik tombol dropdown */
             .dropdown-toggle {
                 cursor: pointer;
                 display: flex;
                 align-items: center;
                 gap: 6px;
+                padding: 8px 12px;
+                border-radius: 6px;
+                user-select: none;
+            }
+
+            .dropdown-toggle:hover,
+            .dropdown.open .dropdown-toggle {
+                background-color: #f1f5f9;
+                color: #007bff;
             }
 
             .chevron-icon {
@@ -70,12 +89,14 @@ class MyNavbar extends HTMLElement {
                 stroke-width: 2.2;
                 stroke-linecap: round;
                 stroke-linejoin: round;
-                transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+                transition: transform 0.2s ease;
+                pointer-events: none;
             }
 
+            /* Container dropdown menu dengan bridge area tanpa celah kosong */
             .dropdown-menu {
                 position: absolute;
-                top: calc(100% + 8px);
+                top: 100%;
                 right: 0;
                 left: auto;
                 background-color: #ffffff;
@@ -84,14 +105,14 @@ class MyNavbar extends HTMLElement {
                 border: 1px solid #edf2f7;
                 list-style: none;
                 padding: 6px 0;
-                margin: 0;
+                margin: 4px 0 0 0;
                 min-width: 170px;
                 display: none;
                 z-index: 1001;
             }
 
             .dropdown-menu li a {
-                padding: 9px 18px;
+                padding: 10px 18px;
                 display: block;
                 font-weight: 500;
                 font-size: 14.5px;
@@ -105,15 +126,15 @@ class MyNavbar extends HTMLElement {
                 color: #007bff;
             }
 
-            /* Hover Dropdown Desktop */
-            @media (min-width: 769px) {
-                .dropdown:hover .dropdown-menu {
-                    display: block;
-                }
+            /* Buka dropdown saat di-hover ATAU saat kelas .open aktif (di-klik) */
+            .dropdown:hover .dropdown-menu,
+            .dropdown.open .dropdown-menu {
+                display: block;
+            }
 
-                .dropdown:hover .chevron-icon {
-                    transform: rotate(180deg);
-                }
+            .dropdown:hover .chevron-icon,
+            .dropdown.open .chevron-icon {
+                transform: rotate(180deg);
             }
 
             /* --- Tombol Hamburger --- */
@@ -121,12 +142,12 @@ class MyNavbar extends HTMLElement {
                 display: none;
                 flex-direction: column;
                 justify-content: space-between;
-                width: 24px;
-                height: 18px;
+                width: 28px;
+                height: 20px;
                 background: transparent;
                 border: none;
                 cursor: pointer;
-                padding: 0;
+                padding: 2px;
             }
 
             .hamburger-btn span {
@@ -138,7 +159,7 @@ class MyNavbar extends HTMLElement {
             }
 
             .hamburger-btn.open span:nth-child(1) {
-                transform: translateY(7.7px) rotate(45deg);
+                transform: translateY(6.5px) rotate(45deg);
             }
 
             .hamburger-btn.open span:nth-child(2) {
@@ -146,7 +167,7 @@ class MyNavbar extends HTMLElement {
             }
 
             .hamburger-btn.open span:nth-child(3) {
-                transform: translateY(-7.7px) rotate(-45deg);
+                transform: translateY(-6.5px) rotate(-45deg);
             }
 
             /* --- Tampilan Mobile --- */
@@ -162,12 +183,13 @@ class MyNavbar extends HTMLElement {
                     width: 100%;
                     background-color: #ffffff;
                     flex-direction: column;
-                    align-items: center;
-                    gap: 16px;
-                    padding: 20px 0;
-                    box-shadow: 0 8px 10px rgba(0, 0, 0, 0.05);
+                    align-items: stretch;
+                    gap: 4px;
+                    padding: 12px 16px;
+                    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
                     border-top: 1px solid #f0f0f0;
                     display: none;
+                    box-sizing: border-box;
                 }
 
                 .navbar-links.active {
@@ -175,10 +197,14 @@ class MyNavbar extends HTMLElement {
                 }
 
                 .dropdown {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
                     width: 100%;
+                }
+
+                .dropdown-toggle {
+                    justify-content: space-between;
+                    width: 100%;
+                    box-sizing: border-box;
+                    padding: 10px 14px;
                 }
 
                 .dropdown-menu {
@@ -187,17 +213,12 @@ class MyNavbar extends HTMLElement {
                     border: none;
                     background-color: #f8fafc;
                     width: 100%;
-                    text-align: center;
-                    margin-top: 8px;
-                    border-radius: 0;
+                    margin-top: 4px;
+                    border-radius: 6px;
                 }
 
-                .dropdown.open .dropdown-menu {
-                    display: block;
-                }
-
-                .dropdown.open .chevron-icon {
-                    transform: rotate(180deg);
+                .dropdown-menu li a {
+                    padding: 10px 20px;
                 }
             }
         </style>
@@ -253,20 +274,42 @@ class MyNavbar extends HTMLElement {
 
         const hamburger = this.querySelector('.hamburger-btn');
         const navLinks = this.querySelector('.navbar-links');
+        const dropdowns = this.querySelectorAll('.dropdown');
 
-        hamburger.addEventListener('click', () => {
+        // Toggle Hamburger Menu (Mobile)
+        hamburger.addEventListener('click', (e) => {
+            e.stopPropagation();
             hamburger.classList.toggle('open');
             navLinks.classList.toggle('active');
         });
 
-        const dropdownToggles = this.querySelectorAll('.dropdown-toggle');
-
-        dropdownToggles.forEach((toggle) => {
+        // Toggle Dropdown Menu
+        dropdowns.forEach((dropdown) => {
+            const toggle = dropdown.querySelector('.dropdown-toggle');
+            
             toggle.addEventListener('click', (e) => {
                 e.preventDefault();
-                const parentDropdown = toggle.closest('.dropdown');
-                parentDropdown.classList.toggle('open');
+                e.stopPropagation();
+
+                // Tutup dropdown lain yang sedang terbuka
+                dropdowns.forEach((d) => {
+                    if (d !== dropdown) d.classList.remove('open');
+                });
+
+                // Toggle dropdown yang diklik
+                dropdown.classList.toggle('open');
             });
+        });
+
+        // Fitur: Tutup dropdown jika pengguna mengklik area luar navbar
+        document.addEventListener('click', (e) => {
+            if (!this.contains(e.target)) {
+                dropdowns.forEach((d) => d.classList.remove('open'));
+                if (navLinks.classList.contains('active')) {
+                    hamburger.classList.remove('open');
+                    navLinks.classList.remove('active');
+                }
+            }
         });
     }
 }
