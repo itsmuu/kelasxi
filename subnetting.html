@@ -70,17 +70,173 @@
         }
 
         .login-illustration {
+            position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 12px;
+            padding: 24px;
+            border-radius: 20px;
+            overflow: hidden;
+            min-height: 260px;
+            background: linear-gradient(135deg, #eef4ff 0%, #dbeafe 45%, #e0f2fe 100%);
+            box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.08);
         }
 
-        .login-illustration img {
+        /* Soft moving glow blobs behind the network illustration */
+        .login-illustration::before,
+        .login-illustration::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(30px);
+            opacity: 0.55;
+            pointer-events: none;
+        }
+
+        .login-illustration::before {
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.45), transparent 70%);
+            top: -40px;
+            left: -30px;
+            animation: blobFloat1 7s ease-in-out infinite;
+        }
+
+        .login-illustration::after {
+            width: 160px;
+            height: 160px;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.4), transparent 70%);
+            bottom: -30px;
+            right: -20px;
+            animation: blobFloat2 8s ease-in-out infinite;
+        }
+
+        @keyframes blobFloat1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(20px, 15px) scale(1.15); }
+        }
+
+        @keyframes blobFloat2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-15px, -20px) scale(1.1); }
+        }
+
+        .network-illustration {
+            position: relative;
             width: 100%;
             max-width: 300px;
             height: auto;
-            object-fit: contain;
+            z-index: 1;
+        }
+
+        /* Slow spinning globe grid */
+        .globe-group {
+            animation: globeSpin 22s linear infinite;
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+
+        @keyframes globeSpin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Orbit rings spinning at different speeds/directions for parallax */
+        .orbit-ring-1 {
+            animation: orbitSpin 9s linear infinite;
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+
+        .orbit-ring-2 {
+            animation: orbitSpinReverse 14s linear infinite;
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+
+        @keyframes orbitSpin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes orbitSpinReverse {
+            to { transform: rotate(-360deg); }
+        }
+
+        /* Glowing connection markers pulsing on the globe surface */
+        .globe-marker {
+            animation: markerPulse 2.2s ease-in-out infinite;
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+
+        .globe-marker.m1 { animation-delay: 0s; }
+        .globe-marker.m2 { animation-delay: 0.5s; }
+        .globe-marker.m3 { animation-delay: 1s; }
+        .globe-marker.m4 { animation-delay: 1.5s; }
+
+        @keyframes markerPulse {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+
+        /* Whole globe gently bobbing */
+        .globe-float {
+            animation: globeBob 4.5s ease-in-out infinite;
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+
+        @keyframes globeBob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        /* Binary packets rising from the device into the globe */
+        .up-packet {
+            opacity: 0;
+            animation: upPacketTravel 3s ease-in infinite;
+        }
+
+        .up-packet.u1 { animation-delay: 0s; }
+        .up-packet.u2 { animation-delay: 1s; }
+        .up-packet.u3 { animation-delay: 2s; }
+
+        @keyframes upPacketTravel {
+            0% { opacity: 0; transform: translateY(0) scale(0.7); }
+            15% { opacity: 1; transform: translateY(-10px) scale(1); }
+            85% { opacity: 1; transform: translateY(-70px) scale(1); }
+            100% { opacity: 0; transform: translateY(-82px) scale(0.7); }
+        }
+
+        /* Ambient floating binary digits for a "digital" atmosphere */
+        .bit-float {
+            animation: bitDrift 6s ease-in-out infinite;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+
+        .bit-float.b1 { animation-delay: 0s; }
+        .bit-float.b2 { animation-delay: 1.5s; }
+        .bit-float.b3 { animation-delay: 3s; }
+        .bit-float.b4 { animation-delay: 4.5s; }
+
+        @keyframes bitDrift {
+            0%, 100% { opacity: 0; transform: translateY(0); }
+            50% { opacity: 0.55; transform: translateY(-10px); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .login-illustration::before,
+            .login-illustration::after,
+            .globe-group,
+            .orbit-ring-1,
+            .orbit-ring-2,
+            .globe-marker,
+            .globe-float,
+            .up-packet,
+            .bit-float {
+                animation: none !important;
+                opacity: 1 !important;
+            }
         }
 
         /* Responsive Breakpoint (Tablet & Mobile) */
@@ -97,8 +253,9 @@
             }
             .login-illustration {
                 order: -1;
+                min-height: 200px;
             }
-            .login-illustration img {
+            .network-illustration {
                 max-width: 220px;
             }
         }
@@ -117,9 +274,9 @@
 
         input[type="text"], input[type="number"] {
             width: 100%;
-            padding: 12px 16px;
+            padding: 13px 18px;
             border: 1px solid #cbd5e1;
-            border-radius: 8px;
+            border-radius: 14px;
             font-size: 15px;
             transition: all 0.2s;
         }
@@ -151,7 +308,50 @@
         .btn:disabled {
             background-color: #94a3b8;
             cursor: not-allowed;
-            transform: none;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* --- STYLING KHUSUS TOMBOL MULAI (LOGIN) --- */
+        #loginBtn {
+            position: relative;
+            width: auto;
+            min-width: 160px;
+            align-self: flex-start;
+            padding: 14px 32px;
+            border-radius: 99px; /* Rounded super mulus / pill shape */
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 55%, #0ea5e9 100%);
+            background-size: 200% 200%;
+            background-position: 0% 50%;
+            letter-spacing: 0.3px;
+            overflow: hidden;
+            transition: background-position 0.4s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.28);
+        }
+
+        #loginBtn:hover {
+            background-position: 100% 50%;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(37, 99, 235, 0.4);
+        }
+
+        #loginBtn:active {
+            transform: translateY(0);
+            box-shadow: 0 3px 10px rgba(37, 99, 235, 0.25);
+        }
+
+        #loginBtn:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3), 0 10px 24px rgba(37, 99, 235, 0.35);
+        }
+
+        /* Full width & centered on small screens for a comfortable tap target */
+        @media (max-width: 768px) {
+            #loginBtn {
+                align-self: stretch;
+                width: 100%;
+                text-align: center;
+            }
         }
 
         /* Status Badge User */
@@ -297,9 +497,91 @@
                     </form>
                 </div>
 
-                <!-- Sisi Kanan: Gambar Ilustrasi -->
+                <!-- Sisi Kanan: Ilustrasi Animasi Globe Digital & Transfer Data -->
                 <div class="login-illustration">
-                    <img src="undraw_login_weas.svg" alt="Ilustrasi Login">
+                    <svg class="network-illustration" viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animasi globe digital menerima paket data biner dari perangkat">
+                        <defs>
+                            <radialGradient id="globeGrad" cx="35%" cy="30%" r="75%">
+                                <stop offset="0%" stop-color="#7dd3fc"/>
+                                <stop offset="55%" stop-color="#2563eb"/>
+                                <stop offset="100%" stop-color="#1e3a8a"/>
+                            </radialGradient>
+                            <linearGradient id="beamGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+                                <stop offset="0%" stop-color="#38bdf8" stop-opacity="0"/>
+                                <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.8"/>
+                            </linearGradient>
+                            <linearGradient id="deviceGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#334155"/>
+                                <stop offset="100%" stop-color="#1e293b"/>
+                            </linearGradient>
+                            <radialGradient id="packetGlow" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#e0f2fe"/>
+                                <stop offset="100%" stop-color="#38bdf8"/>
+                            </radialGradient>
+                        </defs>
+
+                        <!-- Ambient floating binary digits -->
+                        <text class="bit-float b1" x="20" y="40" font-size="13" fill="#3b82f6">1</text>
+                        <text class="bit-float b2" x="255" y="55" font-size="12" fill="#0ea5e9">0</text>
+                        <text class="bit-float b3" x="30" y="185" font-size="12" fill="#2563eb">0</text>
+                        <text class="bit-float b4" x="250" y="200" font-size="13" fill="#3b82f6">1</text>
+
+                        <g class="globe-float">
+                            <!-- Outer orbit rings with small satellite nodes -->
+                            <g class="orbit-ring-1">
+                                <ellipse cx="150" cy="95" rx="80" ry="30" fill="none" stroke="#93c5fd" stroke-width="1.5" stroke-dasharray="3 6" opacity="0.55" transform="rotate(-15 150 95)"/>
+                                <circle cx="150" cy="65" r="4" fill="#38bdf8" transform="rotate(-15 150 95)"/>
+                            </g>
+                            <g class="orbit-ring-2">
+                                <ellipse cx="150" cy="95" rx="66" ry="66" fill="none" stroke="#bfdbfe" stroke-width="1.2" stroke-dasharray="2 7" opacity="0.4"/>
+                                <circle cx="216" cy="95" r="3.5" fill="#60a5fa"/>
+                            </g>
+
+                            <!-- Globe -->
+                            <g class="globe-group">
+                                <circle cx="150" cy="95" r="48" fill="url(#globeGrad)"/>
+                                <!-- Latitude lines -->
+                                <ellipse cx="150" cy="95" rx="48" ry="16" fill="none" stroke="#dbeafe" stroke-width="1" opacity="0.55"/>
+                                <ellipse cx="150" cy="95" rx="48" ry="32" fill="none" stroke="#dbeafe" stroke-width="1" opacity="0.4"/>
+                                <line x1="150" y1="47" x2="150" y2="143" stroke="#dbeafe" stroke-width="1" opacity="0.45"/>
+                                <!-- Longitude arcs -->
+                                <ellipse cx="150" cy="95" rx="16" ry="48" fill="none" stroke="#dbeafe" stroke-width="1" opacity="0.55"/>
+                                <ellipse cx="150" cy="95" rx="32" ry="48" fill="none" stroke="#dbeafe" stroke-width="1" opacity="0.4"/>
+                                <!-- Pulsing connection markers -->
+                                <circle class="globe-marker m1" cx="128" cy="76" r="3" fill="#f0f9ff"/>
+                                <circle class="globe-marker m2" cx="172" cy="82" r="3" fill="#f0f9ff"/>
+                                <circle class="globe-marker m3" cx="140" cy="112" r="3" fill="#f0f9ff"/>
+                                <circle class="globe-marker m4" cx="168" cy="115" r="3" fill="#f0f9ff"/>
+                            </g>
+                        </g>
+
+                        <!-- Data beam connecting device to the globe -->
+                        <rect x="146" y="150" width="8" height="45" fill="url(#beamGrad)"/>
+
+                        <!-- Binary packets rising along the beam -->
+                        <g transform="translate(150,192)">
+                            <g class="up-packet u1">
+                                <circle r="9" fill="url(#packetGlow)"/>
+                                <text y="3.5" font-family="monospace" font-size="9" font-weight="bold" fill="#0c4a6e" text-anchor="middle">1</text>
+                            </g>
+                            <g class="up-packet u2">
+                                <circle r="9" fill="url(#packetGlow)"/>
+                                <text y="3.5" font-family="monospace" font-size="9" font-weight="bold" fill="#0c4a6e" text-anchor="middle">0</text>
+                            </g>
+                            <g class="up-packet u3">
+                                <circle r="9" fill="url(#packetGlow)"/>
+                                <text y="3.5" font-family="monospace" font-size="9" font-weight="bold" fill="#0c4a6e" text-anchor="middle">1</text>
+                            </g>
+                        </g>
+
+                        <!-- Device sending the data (laptop) -->
+                        <g transform="translate(100,192)">
+                            <rect x="0" y="0" width="100" height="6" rx="3" fill="url(#deviceGrad)"/>
+                            <path d="M 14 0 L 22 -34 Q 23 -38 28 -38 H 72 Q 77 -38 78 -34 L 86 0 Z" fill="url(#deviceGrad)"/>
+                            <rect x="28" y="-34" width="44" height="26" rx="2" fill="#0c4a6e"/>
+                            <text x="50" y="-18" font-family="monospace" font-size="8" fill="#7dd3fc" text-anchor="middle">01 10</text>
+                        </g>
+                    </svg>
                 </div>
             </div>
         </div>
@@ -519,7 +801,7 @@
                 errorMessage.classList.remove("hidden");
             } finally {
                 loginBtn.disabled = false;
-                loginBtn.innerText = 'Mulai Kerjakan Soal';
+                loginBtn.innerText = 'Mulai';
             }
         }
 
