@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teori Classless IP (CIDR) - Media Pembelajaran Interaktif</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --primary-hover: #0056b3;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Header Section */
+        .page-header {
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-block;
+            background-color: #e0f2fe;
+            color: #0284c7;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 16px;
+        }
+
+        /* Card Content */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        h2 {
+            font-size: 22px;
+            color: #0f172a;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 17px;
+            color: #334155;
+            margin: 20px 0 10px 0;
+        }
+
+        p {
+            margin-bottom: 14px;
+            color: #334155;
+        }
+
+        /* Analogi Box */
+        .analogy-box {
+            background-color: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0;
+        }
+
+        .analogy-title {
+            font-weight: 600;
+            color: #15803d;
+            margin-bottom: 6px;
+        }
+
+        /* Code/Math Styling */
+        code {
+            background-color: #f1f5f9;
+            color: #0f172a;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .formula-box {
+            background-color: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 16px 0;
+            font-family: monospace;
+        }
+
+        .formula-item {
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        /* Table Styling */
+        .table-responsive {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14.5px;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        /* Step List */
+        .step-list {
+            list-style: none;
+            counter-reset: step-counter;
+            padding-left: 0;
+        }
+
+        .step-list li {
+            counter-increment: step-counter;
+            position: relative;
+            padding-left: 36px;
+            margin-bottom: 16px;
+        }
+
+        .step-list li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 2px;
+            background-color: var(--primary-color);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Summary Box */
+        .summary-box {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+
+        .summary-box h3 {
+            color: #1e40af;
+            margin-top: 0;
+        }
+
+        .summary-box ul {
+            padding-left: 20px;
+            color: #1e3a8a;
+        }
+
+        .summary-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Responsive Adjustment */
+        @media (max-width: 640px) {
+            .container {
+                margin: 20px auto;
+                padding: 0 16px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <my-navbar></my-navbar>
+
+    <div class="container">
+        <header class="page-header">
+            <span class="badge">Modul Teori Jaringan</span>
+            <h1 class="page-title">Classless IP Address (CIDR)</h1>
+            <p class="page-subtitle">Memahami konsep pengalamatan IP fleksibel tanpa kelas dan perhitungan Blok Subnet.</p>
+        </header>
+
+        <section class="card">
+            <h2>1. Pengertian Sederhana</h2>
+            <p><strong>Classless IP</strong> (atau dikenal juga sebagai <strong>CIDR</strong> - <em>Classless Inter-Domain Routing</em>) adalah metode pengalamatan IPv4 <strong>tanpa membagi-bagi IP ke dalam kelas kaku</strong> (Kelas A, B, atau C).</p>
+            
+            <div class="analogy-box">
+                <div class="analogy-title">💡 Analogi Sederhana: Paket Ukuran Baju</div>
+                <p><strong>Classful (Sistem Lama):</strong> Seperti toko baju yang hanya memiliki 3 ukuran kaku: <strong>S</strong> (maks. 254 orang), <strong>M</strong> (maks. 65.000 orang), dan <strong>L</strong> (maks. 16 juta orang). Jika perusahaan membutuhkan baju untuk 500 orang, mereka terpaksa mengambil ukuran M. Akibatnya, 64.500 baju terbuang sia-sia.</p>
+                <p style="margin-bottom:0;"><strong>Classless (Sistem Modern):</strong> Toko baju ini memungkinkan memesan ukuran yang <strong>pas dan sesuai kebutuhan</strong> (misal khusus untuk 500, 100, atau 30 orang saja). Tidak ada alokasi yang terbuang.</p>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>2. Mengapa Classless IP Dibutuhkan?</h2>
+            <p>Pengalamatan sistem Classful lama menimbulkan beberapa masalah fatal di era internet modern:</p>
+            <ul style="padding-left: 20px; margin-bottom: 16px; color: #334155;">
+                <li style="margin-bottom: 8px;"><strong>Pemborosan Alokasi IP:</strong> Banyak IP tersisa yang terbuang dalam satu jaringan kelas.</li>
+                <li style="margin-bottom: 8px;"><strong>Krisis Kelangkaan IPv4:</strong> Stok alokasi IPv4 global yang sangat terbatas cepat habis.</li>
+                <li style="margin-bottom: 8px;"><strong>Tabel Routing Membengkak:</strong> Router internet harus menyimpan jutaan baris rute kelas terpisah.</li>
+            </ul>
+            <p>Sistem CIDR/Classless IP resmi diperkenalkan pada tahun 1993 untuk mengatasi masalah krisis alokasi IP tersebut.</p>
+        </section>
+
+        <section class="card">
+            <h2>3. Notasi Prefix (Slash <code>/</code>)</h2>
+            <p>Dalam Classless IP, pembatas kelas dihapus total. Pembagian jaringan ditentukan oleh Subnet Mask yang dinyatakan dalam <strong>Notasi Prefix (Slash <code>/</code>)</strong>, contohnya: <code>192.168.1.0/26</code>.</p>
+            <p>Angka setelah garis miring (<code>/26</code>) menunjukkan <strong>jumlah bit 1</strong> pada Subnet Mask (dari total 32 bit IPv4).</p>
+
+            <h3>Contoh Pembacaan <code>/26</code>:</h3>
+            <ul style="padding-left: 20px; color: #334155;">
+                <li>Subnet Mask Biner: <code>11111111.11111111.11111111.11000000</code> (26 bit angka <code>1</code>)</li>
+                <li>Subnet Mask Desimal: <code>255.255.255.192</code></li>
+                <li>Sisa bit <code>0</code> untuk Host ID (h): <code>32 - 26 = 6 bit</code></li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>4. Rumus Perhitungan & Blok Subnet</h2>
+            <p>Gunakan rumus dasar berikut untuk menganalisis alokasi Classless IP berdasarkan sisa bit host (<code>h = 32 - prefix</code>):</p>
+            
+            <div class="formula-box">
+                <div class="formula-item"><strong>Sisa Bit Host (h)</strong> = 32 - Prefix</div>
+                <div class="formula-item"><strong>Total IP</strong> = 2<sup>h</sup></div>
+                <div class="formula-item"><strong>Jumlah Host Usable</strong> = (2<sup>h</sup>) - 2</div>
+                <div class="formula-item"><strong>Blok Subnet (Lompatan)</strong> = 256 - Nilai Oktet Aktif Subnet Mask</div>
+            </div>
+
+            <p style="margin-top: 20px;"><strong>Blok Subnet</strong> adalah jarak interval/lompatan dari satu jangkauan Network ID ke Network ID berikutnya.</p>
+
+            <h3>Contoh Kasus: Hitung Alokasi <code>192.168.10.0/27</code></h3>
+            <ol class="step-list">
+                <li>
+                    <strong>Cari Bit Host (h):</strong><br>
+                    <code>h = 32 - 27 = 5 bit</code>
+                </li>
+                <li>
+                    <strong>Hitung Total IP & Host Usable:</strong><br>
+                    Total IP = 2<sup>5</sup> = 32 IP | Host Usable = 32 - 2 = 30 Host
+                </li>
+                <li>
+                    <strong>Tentukan Subnet Mask:</strong><br>
+                    Desimal = <code>255.255.255.224</code> (Oktet terakhir = 224)
+                </li>
+                <li>
+                    <strong>Hitung Blok Subnet (Lompatan):</strong><br>
+                    Blok Subnet = <code>256 - 224 = 32</code> (Kelipatan 32: 0, 32, 64, 96, 128, dst.)
+                </li>
+            </ol>
+
+            <h3>Tabel Pembagian Subnet yang Terbentuk:</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Subnet Ke-</th>
+                            <th>Network ID</th>
+                            <th>Rentang IP Usable (Host)</th>
+                            <th>Broadcast ID</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Subnet 1</strong></td>
+                            <td><code>192.168.10.0</code></td>
+                            <td><code>192.168.10.1</code> s/d <code>192.168.10.30</code></td>
+                            <td><code>192.168.10.31</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Subnet 2</strong></td>
+                            <td><code>192.168.10.32</code></td>
+                            <td><code>192.168.10.33</code> s/d <code>192.168.10.62</code></td>
+                            <td><code>192.168.10.63</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Subnet 3</strong></td>
+                            <td><code>192.168.10.64</code></td>
+                            <td><code>192.168.10.65</code> s/d <code>192.168.10.94</code></td>
+                            <td><code>192.168.10.95</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>5. Perbandingan Classful vs Classless IP</h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Karakteristik</th>
+                            <th>Classful IP</th>
+                            <th>Classless IP (CIDR)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Pembagian Kelas</strong></td>
+                            <td>Terikat Kelas A, B, C, D, E</td>
+                            <td>Tidak ada kelas (Bebas)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Subnet Mask</strong></td>
+                            <td>Tetap / Default (<code>/8</code>, <code>/16</code>, <code>/24</code>)</td>
+                            <td>Fleksibel (<code>/8</code> s/d <code>/30</code>)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Efisiensi IP</strong></td>
+                            <td>Boros (Banyak IP tidak terpakai)</td>
+                            <td>Sangat Efisien (Sesuai kebutuhan)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Notasi Penulisan</strong></td>
+                            <td>Subnet Mask Desimal</td>
+                            <td>Notasi Prefix / Slash (<code>/X</code>)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ukuran Blok Subnet</strong></td>
+                            <td>Kaku / Tetap (256, 65536, dst.)</td>
+                            <td>Dinamis sesuai Prefix</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="summary-box">
+                <h3>📌 Rangkuman Penting</h3>
+                <ul>
+                    <li>Classless IP (CIDR) menghilangkan batasan kelas kaku demi efisiensi stok IPv4.</li>
+                    <li>Notasi Prefix (<code>/X</code>) menentukan berapa banyak bit 1 pada Subnet Mask.</li>
+                    <li>Semakin besar angka prefix (misal <code>/30</code>), semakin sedikit jumlah host yang didapat.</li>
+                    <li><strong>Blok Subnet</strong> adalah nilai lompatan antar Network ID yang dihitung dari <code>256 - nilai_oktet_aktif</code>.</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <script src="navbar.js"></script>
+</body>
+</html>
