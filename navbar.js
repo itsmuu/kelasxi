@@ -7,16 +7,20 @@ class MyNavbar extends HTMLElement {
                 position: sticky;
                 top: 0;
                 z-index: 1000;
+                background-color: #ffffff;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
             }
 
             .navbar-container {
                 position: relative;
-                background-color: #ffffff;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                padding: 12px 28px;
+                max-width: 1100px; /* Membatasi lebar agar tidak terlalu melebar */
+                width: 100%;
+                margin: 0 auto;   /* Memposisikan navbar tepat di tengah */
+                padding: 12px 24px;
+                box-sizing: border-box;
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             }
 
@@ -28,7 +32,7 @@ class MyNavbar extends HTMLElement {
 
             .navbar-links {
                 display: flex;
-                gap: 24px;
+                gap: 28px;
                 list-style: none;
                 margin: 0;
                 padding: 0;
@@ -69,7 +73,6 @@ class MyNavbar extends HTMLElement {
                 transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             }
 
-            /* Perbaikan posisi rata kanan agar tidak bocor keluar layar */
             .dropdown-menu {
                 position: absolute;
                 top: calc(100% + 8px);
@@ -102,7 +105,7 @@ class MyNavbar extends HTMLElement {
                 color: #007bff;
             }
 
-            /* Hover Dropdown untuk Desktop */
+            /* Hover Dropdown Desktop */
             @media (min-width: 769px) {
                 .dropdown:hover .dropdown-menu {
                     display: block;
