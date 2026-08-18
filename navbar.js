@@ -2,7 +2,6 @@ class MyNavbar extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
         <style>
-            /* Target langsung tag <my-navbar> agar sticky bekerja */
             my-navbar {
                 display: block;
                 position: sticky;
@@ -59,7 +58,6 @@ class MyNavbar extends HTMLElement {
                 gap: 6px;
             }
 
-            /* Style Ikon Panah SVG Lembut */
             .chevron-icon {
                 width: 14px;
                 height: 14px;
@@ -71,10 +69,12 @@ class MyNavbar extends HTMLElement {
                 transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             }
 
+            /* Perbaikan posisi rata kanan agar tidak bocor keluar layar */
             .dropdown-menu {
                 position: absolute;
                 top: calc(100% + 8px);
-                left: 0;
+                right: 0;
+                left: auto;
                 background-color: #ffffff;
                 box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
                 border-radius: 8px;
@@ -113,7 +113,7 @@ class MyNavbar extends HTMLElement {
                 }
             }
 
-            /* --- Tombol Hamburger (Ikon Garis 3) --- */
+            /* --- Tombol Hamburger --- */
             .hamburger-btn {
                 display: none;
                 flex-direction: column;
@@ -134,7 +134,6 @@ class MyNavbar extends HTMLElement {
                 transition: transform 0.3s ease, opacity 0.3s ease;
             }
 
-            /* Animasi Berubah Menjadi X (Silang) */
             .hamburger-btn.open span:nth-child(1) {
                 transform: translateY(7.7px) rotate(45deg);
             }
@@ -147,7 +146,7 @@ class MyNavbar extends HTMLElement {
                 transform: translateY(-7.7px) rotate(-45deg);
             }
 
-            /* --- Tampilan untuk layar HP / Mobile --- */
+            /* --- Tampilan Mobile --- */
             @media (max-width: 768px) {
                 .hamburger-btn {
                     display: flex;
@@ -172,7 +171,6 @@ class MyNavbar extends HTMLElement {
                     display: flex;
                 }
 
-                /* Menyesuaikan Dropdown di Mobile */
                 .dropdown {
                     display: flex;
                     flex-direction: column;
@@ -202,7 +200,6 @@ class MyNavbar extends HTMLElement {
         </style>
 
         <nav class="navbar-container">
-            <!-- Brand & Icon 4 Kotak Biru -->
             <a href="index.html" class="navbar-brand">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="#007bff">
                     <rect x="3" y="3" width="8" height="8" rx="2.5"/>
@@ -212,18 +209,15 @@ class MyNavbar extends HTMLElement {
                 </svg>
             </a>
 
-            <!-- Tombol Hamburger Garis 3 -->
             <button class="hamburger-btn" aria-label="Toggle navigation">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
 
-            <!-- Menu Navigation -->
             <ul class="navbar-links">
                 <li><a href="index.html">Home</a></li>
                 
-                <!-- Dropdown Menu Teori -->
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle">
                         Teori
@@ -237,7 +231,6 @@ class MyNavbar extends HTMLElement {
                     </ul>
                 </li>
 
-                <!-- Dropdown Menu Latihan -->
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle">
                         Latihan
@@ -255,7 +248,6 @@ class MyNavbar extends HTMLElement {
         </nav>
         `;
 
-        // Interaktivitas Klik Hamburger
         const hamburger = this.querySelector('.hamburger-btn');
         const navLinks = this.querySelector('.navbar-links');
 
@@ -264,12 +256,11 @@ class MyNavbar extends HTMLElement {
             navLinks.classList.toggle('active');
         });
 
-        // Interaktivitas Klik Dropdown (Khusus Mobile / Touch Screen)
         const dropdownToggles = this.querySelectorAll('.dropdown-toggle');
 
         dropdownToggles.forEach((toggle) => {
             toggle.addEventListener('click', (e) => {
-                e.preventDefault(); // Mencegah reload/jump ke atas
+                e.preventDefault();
                 const parentDropdown = toggle.closest('.dropdown');
                 parentDropdown.classList.toggle('open');
             });
