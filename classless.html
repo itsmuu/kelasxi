@@ -22,11 +22,6 @@
             padding: 0;
         }
 
-        html, body {
-            overflow-x: hidden; /* Mencegah seluruh halaman bocor ke samping */
-            width: 100%;
-        }
-
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background-color: var(--bg-color);
@@ -38,7 +33,6 @@
             max-width: 900px;
             margin: 40px auto;
             padding: 0 20px;
-            width: 100%;
         }
 
         /* Header Section */
@@ -63,13 +57,11 @@
             font-weight: 700;
             color: #0f172a;
             margin-bottom: 8px;
-            word-wrap: break-word;
         }
 
         .page-subtitle {
             color: var(--text-muted);
             font-size: 16px;
-            word-wrap: break-word;
         }
 
         /* Card Content */
@@ -80,8 +72,6 @@
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
             border: 1px solid var(--border-color);
             margin-bottom: 24px;
-            width: 100%;
-            overflow: hidden; /* Mencegah isi kartu meluap keluar */
         }
 
         h2 {
@@ -93,21 +83,17 @@
             gap: 10px;
             border-bottom: 2px solid #f1f5f9;
             padding-bottom: 10px;
-            word-wrap: break-word;
         }
 
         h3 {
             font-size: 17px;
             color: #334155;
             margin: 20px 0 10px 0;
-            word-wrap: break-word;
         }
 
-        p, li {
+        p {
             margin-bottom: 14px;
             color: #334155;
-            overflow-wrap: break-word; /* Mencegah kata panjang membuat bocor */
-            word-wrap: break-word;
         }
 
         /* Analogi Box */
@@ -117,7 +103,6 @@
             padding: 16px 20px;
             border-radius: 0 8px 8px 0;
             margin: 16px 0;
-            overflow-wrap: break-word;
         }
 
         .analogy-title {
@@ -126,7 +111,7 @@
             margin-bottom: 6px;
         }
 
-        /* Code/Math Styling - Penanganan Teks Biner & Kode */
+        /* Code/Math Styling */
         code {
             background-color: #f1f5f9;
             color: #0f172a;
@@ -134,10 +119,6 @@
             border-radius: 4px;
             font-family: monospace;
             font-size: 14px;
-            overflow-wrap: anywhere; /* Biner panjang akan otomatis turun di HP */
-            word-break: break-all;
-            display: inline-block;
-            max-width: 100%;
         }
 
         .formula-box {
@@ -147,37 +128,29 @@
             border-radius: 8px;
             margin: 16px 0;
             font-family: monospace;
-            overflow-x: auto;
         }
 
         .formula-item {
             margin-bottom: 8px;
             font-size: 15px;
-            overflow-wrap: break-word;
         }
 
-        /* Table Responsive Styling */
+        /* Table Styling */
         .table-responsive {
-            width: 100%;
-            overflow-x: auto; /* Memungkinkan tabel di-scroll horizontal tanpa membuat body bocor */
-            -webkit-overflow-scrolling: touch;
+            overflow-x: auto;
             margin: 20px 0;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
         }
 
         table {
             width: 100%;
-            min-width: 500px; /* Menjaga ukuran tabel tetap terbaca di HP */
             border-collapse: collapse;
             text-align: left;
-            font-size: 14px;
+            font-size: 14.5px;
         }
 
         th, td {
-            padding: 12px 14px;
+            padding: 12px 16px;
             border: 1px solid var(--border-color);
-            word-break: normal;
         }
 
         th {
@@ -244,50 +217,19 @@
             margin-bottom: 8px;
         }
 
-        /* Responsive Adjustment untuk HP / Smartphone */
+        /* Responsive Adjustment */
         @media (max-width: 640px) {
             .container {
-                margin: 16px auto;
-                padding: 0 12px;
+                margin: 20px auto;
+                padding: 0 16px;
             }
 
             .card {
-                padding: 18px 14px;
-                border-radius: 10px;
+                padding: 20px;
             }
 
             .page-title {
-                font-size: 22px;
-            }
-
-            .page-subtitle {
-                font-size: 14px;
-            }
-
-            h2 {
-                font-size: 18px;
-            }
-
-            h3 {
-                font-size: 15px;
-            }
-
-            .analogy-box {
-                padding: 12px 14px;
-            }
-
-            .formula-box {
-                padding: 12px;
-            }
-
-            .step-list li {
-                padding-left: 32px;
-            }
-
-            .step-list li::before {
-                width: 22px;
-                height: 22px;
-                font-size: 11px;
+                font-size: 24px;
             }
         }
     </style>
@@ -305,80 +247,83 @@
 
         <section class="card">
             <h2>1. Pengertian Sederhana</h2>
-            <p><strong>Classless IP</strong> (atau dikenal juga sebagai <strong>CIDR</strong> - <em>Classless Inter-Domain Routing</em>) adalah metode pengalamatan IPv4 <strong>tanpa membagi-bagi IP ke dalam kelas kaku</strong> (Kelas A, B, atau C).</p>
+            <p><strong>Classless IP</strong> (atau dikenal sebagai <strong>CIDR</strong> - <em>Classless Inter-Domain Routing</em>) adalah metode pengalamatan IPv4 <strong>tanpa membagi-bagi IP ke dalam kelas kaku</strong> (Kelas A, B, atau C). Pembagian jaringan dilakukan secara dinamis sesuai kebutuhan spesifik perangkat.</p>
             
             <div class="analogy-box">
                 <div class="analogy-title">💡 Analogi Sederhana: Paket Ukuran Baju</div>
-                <p><strong>Classful (Sistem Lama):</strong> Seperti toko baju yang hanya memiliki 3 ukuran kaku: <strong>S</strong> (maks. 254 orang), <strong>M</strong> (maks. 65.000 orang), dan <strong>L</strong> (maks. 16 juta orang). Jika perusahaan membutuhkan baju untuk 500 orang, mereka terpaksa mengambil ukuran M. Akibatnya, 64.500 baju terbuang sia-sia.</p>
-                <p style="margin-bottom:0;"><strong>Classless (Sistem Modern):</strong> Toko baju ini memungkinkan memesan ukuran yang <strong>pas dan sesuai kebutuhan</strong> (misal khusus untuk 500, 100, atau 30 orang saja). Tidak ada alokasi yang terbuang.</p>
+                <p><strong>Classful (Sistem Lama):</strong> Seperti toko yang hanya menjual baju ukuran S (254 orang), M (65.000 orang), dan L (16 juta orang). Jika butuh baju untuk 300 orang, Anda terpaksa membeli ukuran M, sehingga 64.700 baju sisanya terbuang sia-sia.</p>
+                <p style="margin-bottom:0;"><strong>Classless (Sistem Modern):</strong> Toko baju ini memungkinkan Anda memesan ukuran baju yang <strong>pas dan fleksibel</strong> (misalnya khusus untuk 300, 50, atau 12 orang saja) tanpa ada alokasi yang terbuang.</p>
             </div>
         </section>
 
         <section class="card">
-            <h2>2. Mengapa Classless IP Dibutuhkan?</h2>
-            <p>Pengalamatan sistem Classful lama menimbulkan beberapa masalah fatal di era internet modern:</p>
-            <ul style="padding-left: 20px; margin-bottom: 16px; color: #334155;">
-                <li><strong>Pemborosan Alokasi IP:</strong> Banyak IP tersisa yang terbuang dalam satu jaringan kelas.</li>
-                <li><strong>Krisis Kelangkaan IPv4:</strong> Stok alokasi IPv4 global yang sangat terbatas cepat habis.</li>
-                <li><strong>Tabel Routing Membengkak:</strong> Router internet harus menyimpan jutaan baris rute kelas terpisah.</li>
-            </ul>
-            <p>Sistem CIDR/Classless IP resmi diperkenalkan pada tahun 1993 untuk mengatasi masalah krisis alokasi IP tersebut.</p>
-        </section>
-
-        <section class="card">
-            <h2>3. Notasi Prefix (Slash <code>/</code>)</h2>
-            <p>Dalam Classless IP, pembatas kelas dihapus total. Pembagian jaringan ditentukan oleh Subnet Mask yang dinyatakan dalam <strong>Notasi Prefix (Slash <code>/</code>)</strong>, contohnya: <code>192.168.1.0/26</code>.</p>
+            <h2>2. Notasi Prefix (Slash <code>/</code>)</h2>
+            <p>Dalam Classless IP, pembatas kelas kaku dihapus total. Pembagian alokasi jaringan ditentukan oleh Subnet Mask yang ditulis dalam bentuk <strong>Notasi Prefix (Slash <code>/</code>)</strong>, contohnya: <code>192.168.1.0/26</code>.</p>
             <p>Angka setelah garis miring (<code>/26</code>) menunjukkan <strong>jumlah bit 1</strong> pada Subnet Mask (dari total 32 bit IPv4).</p>
 
-            <h3>Contoh Pembacaan <code>/26</code>:</h3>
+            <h3>Contoh Pembacaan Prefix <code>/26</code>:</h3>
             <ul style="padding-left: 20px; color: #334155;">
-                <li>Subnet Mask Biner:<br><code>11111111.11111111.11111111.11000000</code></li>
-                <li>Subnet Mask Desimal: <code>255.255.255.192</code></li>
-                <li>Sisa bit <code>0</code> untuk Host ID (h): <code>32 - 26 = 6 bit</code></li>
+                <li><strong>Subnet Mask Biner:</strong> <code>11111111.11111111.11111111.11000000</code> (26 bit angka 1)</li>
+                <li><strong>Subnet Mask Desimal:</strong> <code>255.255.255.192</code></li>
+                <li><strong>Sisa Bit Host (h):</strong> <code>32 - 26 = 6 bit</code> (diwakili bit angka 0)</li>
             </ul>
         </section>
 
         <section class="card">
-            <h2>4. Rumus Perhitungan & Blok Subnet</h2>
-            <p>Gunakan rumus dasar berikut untuk menganalisis alokasi Classless IP berdasarkan sisa bit host (<code>h = 32 - prefix</code>):</p>
+            <h2>3. Rumus Perhitungan Classless IP</h2>
+            <p>Untuk menghitung kapasitas alamat dan pembagian blok subnet pada Classless IP, gunakan acuan sisa bit host (<code>h = 32 - prefix</code>):</p>
             
             <div class="formula-box">
-                <div class="formula-item"><strong>Sisa Bit Host (h)</strong> = 32 - Prefix</div>
-                <div class="formula-item"><strong>Total IP</strong> = 2<sup>h</sup></div>
-                <div class="formula-item"><strong>Jumlah Host Usable</strong> = (2<sup>h</sup>) - 2</div>
-                <div class="formula-item"><strong>Blok Subnet (Lompatan)</strong> = 256 - Nilai Oktet Aktif Subnet Mask</div>
+                <div class="formula-item"><strong>1. Sisa Bit Host (h)</strong> = Total Bit IPv4 (32) - Nilai Prefix</div>
+                <div class="formula-item"><strong>2. Total IP Address</strong> = 2<sup>h</sup></div>
+                <div class="formula-item"><strong>3. Jumlah IP Host Usable</strong> = (2<sup>h</sup>) - 2</div>
+                <div class="formula-item"><strong>4. Blok Subnet (Lompatan)</strong> = 256 - Nilai Oktet Aktif Subnet Mask</div>
             </div>
 
-            <p style="margin-top: 20px;"><strong>Blok Subnet</strong> adalah jarak interval/lompatan dari satu jangkauan Network ID ke Network ID berikutnya.</p>
+            <p style="margin-top: 16px;"><strong>Mengapa IP Host tetap dikurangi 2?</strong><br>
+            Sama seperti prinsip pengalamatan dasar, 2 alamat IP disisihkan untuk:
+            <ul style="padding-left: 20px; color: #334155; margin-top: 6px;">
+                <li><strong>IP Pertama (Paling Awal):</strong> Digunakan sebagai <em>Network ID</em>.</li>
+                <li><strong>IP Terakhir (Paling Akhir):</strong> Digunakan sebagai <em>Broadcast ID</em>.</li>
+            </ul>
+            </p>
 
-            <h3>Contoh Kasus: Hitung Alokasi <code>192.168.10.0/27</code></h3>
+            <h3>Langkah Perhitungan Contoh Kasus <code>192.168.10.0/27</code>:</h3>
             <ol class="step-list">
                 <li>
-                    <strong>Cari Bit Host (h):</strong><br>
-                    <code>h = 32 - 27 = 5 bit</code>
+                    <strong>Menghitung Bit Host (h):</strong><br>
+                    <span style="font-size: 14.5px;">
+                        • h = 32 - 27 = <strong>5 bit host</strong>
+                    </span>
                 </li>
                 <li>
-                    <strong>Hitung Total IP & Host Usable:</strong><br>
-                    Total IP = 2<sup>5</sup> = 32 IP | Host Usable = 32 - 2 = 30 Host
+                    <strong>Menghitung Total IP & Host Usable:</strong><br>
+                    <span style="font-size: 14.5px;">
+                        • Total IP = 2<sup>5</sup> = <strong>32 IP Address</strong><br>
+                        • IP Host Usable = 32 - 2 = <strong>30 Host yang dapat dipakai perangkat</strong>
+                    </span>
                 </li>
                 <li>
-                    <strong>Tentukan Subnet Mask:</strong><br>
-                    Desimal = <code>255.255.255.224</code> (Oktet terakhir = 224)
-                </li>
-                <li>
-                    <strong>Hitung Blok Subnet (Lompatan):</strong><br>
-                    Blok Subnet = <code>256 - 224 = 32</code> (Kelipatan 32: 0, 32, 64, 96, 128, dst.)
+                    <strong>Menentukan Subnet Mask & Blok Subnet (Lompatan):</strong><br>
+                    <span style="font-size: 14.5px;">
+                        • Subnet Mask Desimal = <code>255.255.255.224</code> (Oktet aktif = 224)<br>
+                        • Blok Subnet = 256 - 224 = <strong>32</strong> (Lompatan kelipatan 32: 0, 32, 64, 96, dst.)
+                    </span>
                 </li>
             </ol>
+        </section>
 
-            <h3>Tabel Pembagian Subnet yang Terbentuk:</h3>
+        <section class="card">
+            <h2>4. Contoh Pembagian Subnet (Studi Kasus <code>192.168.10.0/27</code>)</h2>
+            <p>Berdasarkan hasil perhitungan blok subnet dengan kelipatan 32, berikut adalah pembagian jangkauan alamat yang terbentuk:</p>
+
             <div class="table-responsive">
                 <table>
                     <thead>
                         <tr>
                             <th>Subnet Ke-</th>
                             <th>Network ID</th>
-                            <th>Rentang IP Usable (Host)</th>
+                            <th>Rentang IP Host Usable</th>
                             <th>Broadcast ID</th>
                         </tr>
                     </thead>
@@ -408,6 +353,8 @@
 
         <section class="card">
             <h2>5. Perbandingan Classful vs Classless IP</h2>
+            <p>Berikut adalah poin-poin perbedaan utama antara kedua sistem pengalamatan IPv4:</p>
+            
             <div class="table-responsive">
                 <table>
                     <thead>
@@ -421,27 +368,22 @@
                         <tr>
                             <td><strong>Pembagian Kelas</strong></td>
                             <td>Terikat Kelas A, B, C, D, E</td>
-                            <td>Tidak ada kelas (Bebas)</td>
+                            <td>Tidak ada kelas (Bebas/Fleksibel)</td>
                         </tr>
                         <tr>
                             <td><strong>Subnet Mask</strong></td>
-                            <td>Tetap / Default (<code>/8</code>, <code>/16</code>, <code>/24</code>)</td>
+                            <td>Tetap (<code>/8</code>, <code>/16</code>, <code>/24</code>)</td>
                             <td>Fleksibel (<code>/8</code> s/d <code>/30</code>)</td>
                         </tr>
                         <tr>
-                            <td><strong>Efisiensi IP</strong></td>
-                            <td>Boros (Banyak IP tidak terpakai)</td>
+                            <td><strong>Efisiensi Alokasi</strong></td>
+                            <td>Boros (Banyak IP terbuang)</td>
                             <td>Sangat Efisien (Sesuai kebutuhan)</td>
                         </tr>
                         <tr>
                             <td><strong>Notasi Penulisan</strong></td>
-                            <td>Subnet Mask Desimal</td>
+                            <td>Subnet Mask Desimal Full</td>
                             <td>Notasi Prefix / Slash (<code>/X</code>)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Ukuran Blok Subnet</strong></td>
-                            <td>Kaku / Tetap (256, 65536, dst.)</td>
-                            <td>Dinamis sesuai Prefix</td>
                         </tr>
                     </tbody>
                 </table>
@@ -450,10 +392,10 @@
             <div class="summary-box">
                 <h3>📌 Rangkuman Penting</h3>
                 <ul>
-                    <li>Classless IP (CIDR) menghilangkan batasan kelas kaku demi efisiensi stok IPv4.</li>
-                    <li>Notasi Prefix (<code>/X</code>) menentukan berapa banyak bit 1 pada Subnet Mask.</li>
-                    <li>Semakin besar angka prefix (misal <code>/30</code>), semakin sedikit jumlah host yang didapat.</li>
-                    <li><strong>Blok Subnet</strong> adalah nilai lompatan antar Network ID yang dihitung dari <code>256 - nilai_oktet_aktif</code>.</li>
+                    <li>Classless IP (CIDR) menghapus batasan kelas kaku demi efisiensi penggunaan alamat IPv4.</li>
+                    <li>Notasi Prefix (<code>/X</code>) menentukan jumlah bit 1 pada Subnet Mask.</li>
+                    <li><strong>Total IP</strong> dihitung dengan <code>2<sup>h</sup></code> dan <strong>Host Usable</strong> dihitung dengan <code>2<sup>h</sup> - 2</code>.</li>
+                    <li><strong>Blok Subnet</strong> (lompatan) dihitung menggunakan rumus <code>256 - Nilai Oktet Aktif Subnet Mask</code>.</li>
                 </ul>
             </div>
         </section>
