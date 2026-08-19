@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latihan Classful IP Address</title>
+<!-- PEMANGGIL NAVBAR.JS -->
+<script src="navbar.js" defer></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg-0:#f4f6fb;
+    --bg-1:#eaeef7;
+    --panel:#ffffff;
+    --panel-2:#f6f8fc;
+    --line:#e1e6f0;
+    --text:#1c2333;
+    --text-dim:#707b93;
+    --accent:#0ea5b7;
+    --accent-2:#0891b2;
+    --accent-soft:#e3fbfd;
+    --good:#16a34a;
+    --bad:#e11d48;
+    --warn:#d97706;
+    --octA:#e0654a;
+    --octB:#d1971f;
+    --octC:#16a34a;
+    --octD:#2563eb;
+    --shadow:0 4px 20px -8px rgba(30,41,59,0.12);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:'Inter', sans-serif;
+    background:
+      radial-gradient(circle at 12% 8%, rgba(14,165,183,0.07), transparent 40%),
+      radial-gradient(circle at 88% 92%, rgba(37,99,235,0.06), transparent 45%),
+      linear-gradient(180deg, var(--bg-0), var(--bg-1));
+    color:var(--text);
+    min-height:100vh;
+    overflow-x:hidden;
+    position:relative;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:
+      linear-gradient(rgba(28,35,51,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(28,35,51,0.025) 1px, transparent 1px);
+    background-size: 42px 42px;
+    pointer-events:none;
+    z-index:0;
+  }
+  .mono{ font-family:'JetBrains Mono', monospace; }
+
+  /* ===== START SCREEN ===== */
+  #start-screen{
+    position:fixed; inset:0; z-index:50;
+    display:flex; align-items:center; justify-content:center;
+    background: radial-gradient(circle at 50% 30%, #ffffff 0%, var(--bg-0) 75%);
+    padding: 80px 24px 24px;
+    overflow-y: auto;
+  }
+  .start-card{ max-width:620px; width:100%; text-align:center; margin: auto 0; }
+  .ip-hero{ display:flex; justify-content:center; gap:10px; margin-bottom:28px; flex-wrap:wrap; }
+  .ip-hero .oct{
+    font-family:'JetBrains Mono', monospace;
+    font-size:clamp(28px,7vw,52px);
+    font-weight:800;
+    padding:6px 14px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    background:var(--panel);
+    box-shadow:var(--shadow);
+    letter-spacing:1px;
+  }
+  .ip-hero .oct:nth-child(1){ color:var(--octA); }
+  .ip-hero .oct:nth-child(2){ color:var(--octB); }
+  .ip-hero .oct:nth-child(3){ color:var(--octC); }
+  .ip-hero .oct:nth-child(4){ color:var(--octD); }
+  .ip-hero .dot{ font-size:clamp(28px,7vw,52px); font-weight:800; color:var(--text-dim); align-self:center; }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    letter-spacing:3px; text-transform:uppercase;
+    font-size:12px; color:var(--accent-2); margin-bottom:14px;
+  }
+  h1{ font-size:clamp(24px,4.2vw,38px); font-weight:800; margin-bottom:14px; line-height:1.2; }
+  .sub{ color:var(--text-dim); font-size:15px; line-height:1.7; margin-bottom:30px; }
+  .rules{
+    text-align:left;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:20px 22px;
+    margin-bottom:30px;
+    font-size:14px;
+    color:var(--text-dim);
+    box-shadow:var(--shadow);
+  }
+  .rules li{ margin:8px 0; list-style:none; display:flex; gap:10px; align-items:flex-start;}
+  .rules li::before{ content:"›"; color:var(--accent); font-weight:800; font-family:'JetBrains Mono', monospace; }
+  .btn{
+    font-family:'Inter', sans-serif; font-weight:700; font-size:15px;
+    padding:14px 30px; border-radius:10px; border:none; cursor:pointer;
+    transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .btn-primary{
+    background:linear-gradient(135deg, var(--accent), var(--accent-2));
+    color:#ffffff;
+    box-shadow:0 10px 26px -10px rgba(14,165,183,0.55);
+  }
+  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 14px 32px -8px rgba(14,165,183,0.65);}
+  .btn-secondary{
+    background:var(--panel);
+    color:var(--text);
+    border:1px solid var(--line);
+  }
+  .btn-secondary:hover{ border-color:var(--accent); color:var(--accent-2); }
+  .btn:disabled{ opacity:.35; cursor:not-allowed; transform:none !important; box-shadow:none !important;}
+
+  /* ===== APP LAYOUT ===== */
+  #app{
+    display:none;
+    position:relative; z-index:1;
+    max-width:1100px;
+    margin:0 auto;
+    padding:24px 20px 40px; /* Kembali ke standar karena navbar sudah dihilangkan */
+    min-height:100vh;
+  }
+  header.topbar{ margin-bottom:22px; }
+  .topbar-row{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:12px; }
+  .brand{ font-family:'JetBrains Mono', monospace; font-weight:700; font-size:13px; color:var(--text-dim); letter-spacing:1px; }
+  .brand span{ color:var(--accent-2); }
+  .topbar-right{ display:flex; align-items:center; gap:10px; }
+  .qcounter{ font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--text-dim); }
+  .qcounter b{ color:var(--text); }
+
+  /* sidebar toggle icon */
+  .icon-btn{
+    width:38px; height:38px;
+    border-radius:9px;
+    border:1px solid var(--line);
+    background:var(--panel);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    box-shadow:var(--shadow);
+    transition:border-color .15s ease, background .15s ease;
+    flex-shrink:0;
+  }
+  .icon-btn:hover{ border-color:var(--accent); }
+  .icon-btn .grid-dots{
+    display:grid;
+    grid-template-columns:repeat(3,4px);
+    grid-template-rows:repeat(3,4px);
+    gap:3px;
+  }
+  .icon-btn .grid-dots i{
+    width:4px; height:4px; border-radius:1px;
+    background:var(--text-dim);
+  }
+  .icon-btn:hover .grid-dots i{ background:var(--accent-2); }
+
+  /* signature: octet progress bar */
+  .octet-progress{
+    display:flex; align-items:center; gap:6px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:14px 16px;
+    box-shadow:var(--shadow);
+  }
+  .octet-progress .grp{ flex:1; display:flex; flex-direction:column; gap:6px; }
+  .octet-progress .num{ font-family:'JetBrains Mono', monospace; font-weight:800; font-size:15px; text-align:center; }
+  .octet-progress .bar{ height:6px; border-radius:4px; background:var(--panel-2); overflow:hidden; border:1px solid var(--line); }
+  .octet-progress .bar i{ display:block; height:100%; width:0%; border-radius:4px; transition:width .35s ease; }
+  .grp[data-oct="0"] .num{ color:var(--octA);} .grp[data-oct="0"] .bar i{ background:var(--octA);}
+  .grp[data-oct="1"] .num{ color:var(--octB);} .grp[data-oct="1"] .bar i{ background:var(--octB);}
+  .grp[data-oct="2"] .num{ color:var(--octC);} .grp[data-oct="2"] .bar i{ background:var(--octC);}
+  .grp[data-oct="3"] .num{ color:var(--octD);} .grp[data-oct="3"] .bar i{ background:var(--octD);}
+  .octet-progress .sep{ font-family:'JetBrains Mono', monospace; font-weight:800; color:var(--text-dim); padding-bottom:12px; }
+
+  /* two-column layout: quiz + sidebar */
+  .layout{
+    display:flex;
+    gap:20px;
+    align-items:flex-start;
+  }
+  .main-col{
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .qcard{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:30px 28px;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    box-shadow:var(--shadow);
+    animation:fadein .3s ease;
+  }
+  @keyframes fadein{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+  .qtag{
+    display:inline-block;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px; letter-spacing:2px; text-transform:uppercase;
+    color:var(--accent-2);
+    background:var(--accent-soft);
+    border:1px solid rgba(14,165,183,0.3);
+    padding:4px 10px; border-radius:6px;
+    margin-bottom:16px; width:fit-content;
+  }
+  .qtext{ font-size:19px; font-weight:600; line-height:1.55; margin-bottom:26px; }
+  .qtext .addr{ color:var(--accent-2); font-family:'JetBrains Mono', monospace; font-weight:700; }
+
+  .options{ display:flex; flex-direction:column; gap:10px; }
+  .opt{
+    display:flex; align-items:center; gap:14px;
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    cursor:pointer;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .opt:hover{ border-color:var(--accent); }
+  .opt.selected{ border-color:var(--accent); background:var(--accent-soft); }
+  .opt .letter{
+    font-family:'JetBrains Mono', monospace; font-weight:800; font-size:13px;
+    width:28px; height:28px; border-radius:7px;
+    background:var(--panel); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; color:var(--text-dim);
+  }
+  .opt.selected .letter{ background:var(--accent); color:#fff; border-color:var(--accent); }
+  .opt .otext{ font-size:14.5px; color:var(--text); }
+
+  .navrow{ display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:24px; }
+
+  /* ===== SIDEBAR (question list) ===== */
+  .sidebar{
+    width:260px;
+    flex-shrink:0;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:18px;
+    box-shadow:var(--shadow);
+    max-height:calc(100vh - 180px);
+    display:flex;
+    flex-direction:column;
+    transition:width .2s ease, opacity .2s ease, padding .2s ease;
+  }
+  .sidebar.collapsed{
+    display:none;
+  }
+  .sidebar-head{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:14px;
+  }
+  .sidebar-title{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px; letter-spacing:1.5px; text-transform:uppercase;
+    color:var(--text-dim);
+  }
+  .sidebar-legend{
+    display:flex; gap:12px;
+    font-size:11px; color:var(--text-dim);
+    margin-bottom:12px;
+  }
+  .sidebar-legend span{ display:flex; align-items:center; gap:5px; }
+  .legend-dot{ width:8px; height:8px; border-radius:2px; display:inline-block; }
+  .legend-dot.answered{ background:var(--accent-2); }
+  .legend-dot.empty{ background:var(--panel-2); border:1px solid var(--line); }
+
+  .jumplist{
+    display:flex; flex-direction:column; gap:6px;
+    overflow-y:auto;
+    padding-right:4px;
+  }
+  .jitem{
+    display:flex; align-items:center; gap:10px;
+    padding:8px 10px;
+    border-radius:8px;
+    border:1px solid var(--line);
+    background:var(--panel-2);
+    cursor:pointer;
+    font-size:12.5px;
+    transition:border-color .12s ease, background .12s ease;
+  }
+  .jitem:hover{ border-color:var(--accent); }
+  .jitem .jnum{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:800; font-size:11px;
+    width:22px; height:22px; border-radius:6px;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--panel); border:1px solid var(--line);
+    color:var(--text-dim); flex-shrink:0;
+  }
+  .jitem.answered .jnum{ background:var(--accent-soft); color:var(--accent-2); border-color:var(--accent); }
+  .jitem.current{ border-color:var(--text); background:#fff; }
+  .jitem.current .jnum{ background:var(--text); color:#fff; border-color:var(--text); }
+  .jitem .jtext{
+    color:var(--text-dim);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .jitem.answered .jtext{ color:var(--text); }
+
+  .icon-btn.active{
+    border-color:var(--accent);
+    background:var(--accent-soft);
+  }
+  .icon-btn.active .grid-dots i{ background:var(--accent-2); }
+
+  footer.hint{
+    text-align:center; color:var(--text-dim); font-size:12px;
+    margin-top:18px; font-family:'JetBrains Mono', monospace;
+  }
+
+  /* ===== RESULT SCREEN ===== */
+  #app-result{ display:none; position:relative; z-index:1; max-width:760px; margin:0 auto; padding:40px 20px 60px; }
+  #result-screen{ display:flex; flex-direction:column; align-items:center; text-align:center; padding:30px 10px; }
+  .score-ring{
+    width:220px; height:220px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    position:relative; margin:10px auto 26px;
+    background:conic-gradient(var(--accent) calc(var(--pct,0)*1%), var(--panel-2) 0);
+  }
+  .score-ring::before{
+    content:""; position:absolute; inset:12px; border-radius:50%;
+    background:var(--panel); border:1px solid var(--line);
+  }
+  .score-ring .inner{ position:relative; z-index:1; }
+  .score-ring .pctnum{ font-family:'JetBrains Mono', monospace; font-size:42px; font-weight:800; }
+  .score-ring .pctlabel{ font-size:12px; color:var(--text-dim); letter-spacing:2px; text-transform:uppercase; margin-top:4px; }
+  .score-detail{ font-family:'JetBrains Mono', monospace; color:var(--text-dim); margin-bottom:24px; font-size:14px; }
+  .score-detail b{ color:var(--good); }
+  .score-detail .miss{ color:var(--bad); }
+  .verdict{ font-size:20px; font-weight:800; margin-bottom:6px; }
+  .review-list{
+    width:100%; max-width:640px; text-align:left; margin-top:20px;
+    display:flex; flex-direction:column; gap:10px;
+    max-height:340px; overflow-y:auto; padding-right:6px;
+  }
+  .review-item{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:12px 16px; font-size:13.5px; box-shadow:var(--shadow);
+  }
+  .review-item.wrong{ border-color:rgba(225,29,72,0.35); }
+  .review-item.right{ border-color:rgba(22,163,74,0.3); }
+  .review-item .rq{ color:var(--text-dim); margin-bottom:4px; }
+  .review-item .ra{ font-family:'JetBrains Mono', monospace; font-size:12.5px; }
+  .review-item .ra.ok{ color:var(--good); }
+  .review-item .ra.no{ color:var(--bad); }
+
+  /* ===== FULLSCREEN WARNING OVERLAY ===== */
+  #fs-warning{
+    position:fixed; inset:0; z-index:100; display:none;
+    align-items:center; justify-content:center;
+    background:rgba(28,35,51,0.55);
+    backdrop-filter:blur(6px);
+    text-align:center; padding:24px;
+  }
+  #fs-warning .box{
+    max-width:440px; background:var(--panel);
+    border:1px solid var(--bad); border-radius:16px; padding:34px 28px;
+    box-shadow:0 20px 60px -10px rgba(225,29,72,0.25);
+  }
+  #fs-warning .icon{ font-size:38px; margin-bottom:14px; }
+  #fs-warning h2{ font-size:19px; margin-bottom:10px; color:var(--bad); }
+  #fs-warning p{ color:var(--text-dim); font-size:14px; line-height:1.6; margin-bottom:22px; }
+
+  @media (max-width:860px){
+    .layout{ flex-direction:column; }
+    .sidebar{ width:100%; max-height:260px; }
+  }
+  @media (max-width:520px){
+    .qcard{ padding:22px 18px; }
+    .octet-progress .sep{ display:none; }
+  }
+</style>
+</head>
+<body>
+<my-navbar></my-navbar>
+
+  <!-- CONTAINER NAVBAR -->
+  <div id="navbar-container"></div>
+
+  <!-- START SCREEN -->
+  <div id="start-screen">
+    <div class="start-card">
+      <div class="eyebrow">Jaringan Komputer · Sesi Latihan</div>
+      <h1>Latihan Soal Classful IP Address</h1>
+      <p class="sub">20 soal pilihan ganda (A–E) seputar Kelas A, B, C, D, E, subnet mask default, network ID, broadcast, dan alokasi IP privat.</p>
+      <ul class="rules">
+        <li>Halaman akan masuk mode <b>layar penuh (fullscreen)</b> saat latihan dimulai.</li>
+        <li>Jika Anda keluar dari layar penuh, akan muncul peringatan untuk kembali.</li>
+        <li>Skor akhir dan pembahasan singkat akan ditampilkan setelah soal ke-20.</li>
+      </ul>
+      <button class="btn btn-primary" id="btn-start">Mulai Latihan (Fullscreen)</button>
+    </div>
+  </div>
+
+  <!-- FULLSCREEN EXIT WARNING -->
+  <div id="fs-warning">
+    <div class="box">
+      <div class="icon">⚠️</div>
+      <h2>Anda Keluar dari Mode Layar Penuh</h2>
+      <p>Latihan ini harus dikerjakan dalam mode layar penuh. Klik tombol di bawah untuk melanjutkan kembali ke soal Anda.</p>
+      <button class="btn btn-primary" id="btn-refullscreen">Kembali ke Layar Penuh</button>
+    </div>
+  </div>
+
+  <!-- APP -->
+  <div id="app">
+    <header class="topbar">
+      <div class="topbar-row">
+        <div class="brand">CLASSFUL·<span>IP</span>·QUIZ</div>
+        <div class="topbar-right">
+          <div class="qcounter">Soal <b id="qnum">1</b> / 20</div>
+          <div class="icon-btn active" id="btn-toggle-sidebar" title="Sembunyikan/tampilkan daftar soal">
+            <div class="grid-dots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="octet-progress" id="octet-progress"></div>
+    </header>
+
+    <div class="layout">
+      <div class="main-col">
+        <div class="qcard" id="qcard">
+          <div class="qtag" id="qtag">SOAL 1</div>
+          <div class="qtext" id="qtext"></div>
+          <div class="options" id="options"></div>
+
+          <div class="navrow">
+            <button class="btn btn-secondary" id="btn-prev">← Sebelumnya</button>
+            <button class="btn btn-primary" id="btn-next">Selanjutnya →</button>
+          </div>
+        </div>
+        <footer class="hint">Tekan opsi jawaban untuk memilih · navigasi bebas antar soal</footer>
+      </div>
+
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-head">
+          <div class="sidebar-title">Daftar Soal</div>
+        </div>
+        <div class="sidebar-legend">
+          <span><i class="legend-dot answered"></i>Terjawab</span>
+          <span><i class="legend-dot empty"></i>Kosong</span>
+        </div>
+        <div class="jumplist" id="jumplist"></div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="app-result">
+    <div id="result-screen">
+      <div class="eyebrow">Hasil Latihan</div>
+      <div class="score-ring" style="--pct:0" id="score-ring">
+        <div class="inner">
+          <div class="pctnum" id="pctnum">0%</div>
+          <div class="pctlabel">Skor</div>
+        </div>
+      </div>
+      <div class="verdict" id="verdict">—</div>
+      <div class="score-detail" id="score-detail">—</div>
+      <div style="display:flex; gap:12px;">
+        <button class="btn btn-secondary" id="btn-review-toggle">Lihat Pembahasan</button>
+        <button class="btn btn-primary" id="btn-restart">Ulangi Latihan</button>
+      </div>
+      <div class="review-list" id="review-list" style="display:none;"></div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  "use strict";
+
+  const QUESTIONS = [
+    { q: 'Alamat IP <span class="addr">192.168.1.1</span> termasuk ke dalam kelas apa?', opts: ['Kelas A','Kelas B','Kelas C','Kelas D','Kelas E'], correct: 2 },
+    { q: 'Apa default subnet mask untuk alamat IP Kelas B?', opts: ['255.0.0.0','255.255.0.0','255.255.255.0','255.255.255.255','255.255.255.128'], correct: 1 },
+    { q: 'Range oktet pertama (0–255) untuk alamat IP Kelas A adalah?', opts: ['0 – 127','1 – 126','128 – 191','192 – 223','224 – 239'], correct: 1 },
+    { q: 'Alamat IP <span class="addr">224.0.0.5</span> termasuk ke dalam kelas apa?', opts: ['Kelas A','Kelas B','Kelas C','Kelas D','Kelas E'], correct: 3 },
+    { q: 'Berapa jumlah maksimum host pada satu jaringan Kelas C (default, tanpa subnetting)?', opts: ['254','256','65.534','16.777.214','2'], correct: 0 },
+    { q: 'Alamat loopback <span class="addr">127.0.0.1</span> berada pada rentang oktet pertama milik kelas apa?', opts: ['Kelas A','Kelas B','Kelas C','Kelas D','Kelas E'], correct: 0 },
+    { q: 'Berapa prefix CIDR default (jumlah bit network ID) untuk Kelas A?', opts: ['/8','/16','/24','/32','/4'], correct: 0 },
+    { q: 'Alamat IP <span class="addr">172.16.5.4</span> termasuk ke dalam kelas apa?', opts: ['Kelas A','Kelas B','Kelas C','Kelas D','Kelas E'], correct: 1 },
+    { q: 'Manakah yang merupakan rentang alamat IP privat untuk Kelas C?', opts: ['10.0.0.0/8','172.16.0.0/12','192.168.0.0/16','169.254.0.0/16','127.0.0.0/8'], correct: 2 },
+    { q: 'Range oktet pertama untuk alamat IP Kelas D (multicast) adalah?', opts: ['192 – 223','224 – 239','240 – 255','128 – 191','1 – 126'], correct: 1 },
+    { q: 'Berapa jumlah bit yang digunakan sebagai Network ID pada Kelas B (default)?', opts: ['8 bit','16 bit','24 bit','32 bit','4 bit'], correct: 1 },
+    { q: 'Untuk jaringan Kelas C dengan Network ID <span class="addr">192.168.1.0</span>, alamat manakah yang menjadi alamat broadcast?', opts: ['192.168.1.1','192.168.1.254','192.168.1.255','192.168.0.255','192.168.1.256'], correct: 2 },
+    { q: 'Alamat IP Kelas E umumnya digunakan untuk keperluan apa?', opts: ['Multicast streaming','Riset dan eksperimental','Jaringan publik umum','Alamat loopback','Broadcast lokal'], correct: 1 },
+    { q: 'Alamat IP <span class="addr">10.10.10.10</span> termasuk ke dalam kelas apa?', opts: ['Kelas A','Kelas B','Kelas C','Kelas D','Kelas E'], correct: 0 },
+    { q: 'Apa default subnet mask untuk alamat IP Kelas A?', opts: ['255.0.0.0','255.255.0.0','255.255.255.0','255.255.255.252','0.0.0.0'], correct: 0 },
+    { q: 'Berapa jumlah network yang tersedia pada Kelas A (default, setelah dikurangi network yang direservasi)?', opts: ['126','128','254','16.384','2.097.152'], correct: 0 },
+    { q: 'Alamat IP <span class="addr">200.100.50.25</span> termasuk ke dalam kelas apa?', opts: ['Kelas A','Kelas B','Kelas C','Kelas D','Kelas E'], correct: 2 },
+    { q: 'Alamat IP Kelas A selalu diawali dengan bit pertama bernilai?', opts: ['0','10','110','1110','1111'], correct: 0 },
+    { q: 'Rentang alamat <span class="addr">169.254.0.0/16</span> biasanya digunakan untuk keperluan apa?', opts: ['APIPA / link-local','Multicast','Broadcast global','Loopback','Private Kelas C'], correct: 0 },
+    { q: 'Pada Kelas C (default), berapa jumlah oktet yang digunakan sebagai Network ID?', opts: ['1 oktet','2 oktet','3 oktet','4 oktet','0 oktet'], correct: 2 }
+  ];
+
+  const TOTAL = QUESTIONS.length;
+  let current = 0;
+  let answers = new Array(TOTAL).fill(null);
+  let quizFinished = false;
+
+  const startScreen = document.getElementById('start-screen');
+  const app = document.getElementById('app');
+  const appResult = document.getElementById('app-result');
+  const fsWarning = document.getElementById('fs-warning');
+
+  const qnumEl = document.getElementById('qnum');
+  const qtagEl = document.getElementById('qtag');
+  const qtextEl = document.getElementById('qtext');
+  const optionsEl = document.getElementById('options');
+  const jumplistEl = document.getElementById('jumplist');
+  const octetProgressEl = document.getElementById('octet-progress');
+  const btnPrev = document.getElementById('btn-prev');
+  const btnNext = document.getElementById('btn-next');
+  const sidebar = document.getElementById('sidebar');
+  const btnToggleSidebar = document.getElementById('btn-toggle-sidebar');
+
+  const LETTERS = ['A','B','C','D','E'];
+
+  function buildOctetProgress(){
+    octetProgressEl.innerHTML = '';
+    for(let g=0; g<4; g++){
+      const grp = document.createElement('div');
+      grp.className = 'grp';
+      grp.dataset.oct = g;
+      grp.innerHTML = '<div class="num" id="octnum-'+g+'">000</div><div class="bar"><i id="octbar-'+g+'"></i></div>';
+      octetProgressEl.appendChild(grp);
+      if(g < 3){
+        const sep = document.createElement('div');
+        sep.className = 'sep';
+        sep.textContent = '.';
+        octetProgressEl.appendChild(sep);
+      }
+    }
+  }
+
+  function updateOctetProgress(){
+    for(let g=0; g<4; g++){
+      const start = g*5;
+      let answeredInGroup = 0;
+      for(let i=start; i<start+5; i++){
+        if(answers[i] !== null) answeredInGroup++;
+      }
+      const pct = Math.round((answeredInGroup/5)*255);
+      const barPct = Math.round((answeredInGroup/5)*100);
+      const numEl = document.getElementById('octnum-'+g);
+      const barEl = document.getElementById('octbar-'+g);
+      if(numEl) numEl.textContent = String(pct).padStart(3,'0');
+      if(barEl) barEl.style.width = barPct+'%';
+    }
+  }
+
+  function buildJumplist(){
+    jumplistEl.innerHTML = '';
+    QUESTIONS.forEach((item, i)=>{
+      const preview = item.q.replace(/<[^>]+>/g,'');
+      const row = document.createElement('div');
+      row.className = 'jitem';
+      row.innerHTML = '<div class="jnum">'+(i+1)+'</div><div class="jtext">'+preview+'</div>';
+      row.addEventListener('click', ()=>{ current = i; render(); });
+      jumplistEl.appendChild(row);
+    });
+  }
+
+  function render(){
+    const item = QUESTIONS[current];
+    qnumEl.textContent = current+1;
+    qtagEl.textContent = 'SOAL ' + (current+1);
+    qtextEl.innerHTML = item.q;
+
+    optionsEl.innerHTML = '';
+    item.opts.forEach((optText, idx)=>{
+      const div = document.createElement('div');
+      div.className = 'opt' + (answers[current]===idx ? ' selected' : '');
+      div.innerHTML = '<div class="letter">'+LETTERS[idx]+'</div><div class="otext">'+optText+'</div>';
+      div.addEventListener('click', ()=>{
+        answers[current] = idx;
+        updateOctetProgress();
+        render();
+      });
+      optionsEl.appendChild(div);
+    });
+
+    Array.from(jumplistEl.children).forEach((row, idx)=>{
+      row.classList.toggle('current', idx===current);
+      row.classList.toggle('answered', answers[idx]!==null);
+    });
+
+    btnPrev.disabled = current===0;
+    btnNext.textContent = (current===TOTAL-1) ? 'Selesai & Lihat Skor →' : 'Selanjutnya →';
+
+    updateOctetProgress();
+  }
+
+  btnPrev.addEventListener('click', ()=>{
+    if(current>0){ current--; render(); }
+  });
+
+  btnNext.addEventListener('click', ()=>{
+    if(current<TOTAL-1){ current++; render(); }
+    else{ finishQuiz(); }
+  });
+
+  function finishQuiz(){
+    quizFinished = true;
+    let correctCount = 0;
+    answers.forEach((a,i)=>{ if(a===QUESTIONS[i].correct) correctCount++; });
+    const pct = Math.round((correctCount/TOTAL)*100);
+
+    app.style.display = 'none';
+    appResult.style.display = 'block';
+
+    document.getElementById('score-ring').style.setProperty('--pct', pct);
+    document.getElementById('pctnum').textContent = pct + '%';
+    document.getElementById('score-detail').innerHTML =
+      'Benar: <b>'+correctCount+'</b> &nbsp;·&nbsp; Salah: <span class="miss">'+(TOTAL-correctCount)+'</span> &nbsp;·&nbsp; Total Soal: '+TOTAL;
+
+    let verdictText = '';
+    if(pct>=90) verdictText = 'Luar Biasa! Anda menguasai Classful IP Addressing 🎯';
+    else if(pct>=70) verdictText = 'Bagus! Pemahaman Anda sudah cukup solid 👍';
+    else if(pct>=50) verdictText = 'Lumayan, tapi masih perlu latihan lagi 📘';
+    else verdictText = 'Perlu belajar ulang materi Classful IP Addressing 📖';
+    document.getElementById('verdict').textContent = verdictText;
+
+    const reviewList = document.getElementById('review-list');
+    reviewList.innerHTML = '';
+    QUESTIONS.forEach((item, i)=>{
+      const userAns = answers[i];
+      const isCorrect = userAns === item.correct;
+      const div = document.createElement('div');
+      div.className = 'review-item ' + (isCorrect ? 'right' : 'wrong');
+      const userLabel = userAns===null ? '(tidak dijawab)' : LETTERS[userAns]+'. '+item.opts[userAns];
+      const correctLabel = LETTERS[item.correct]+'. '+item.opts[item.correct];
+      div.innerHTML =
+        '<div class="rq">'+(i+1)+'. '+item.q.replace(/<[^>]+>/g,'')+'</div>' +
+        '<div class="ra '+(isCorrect?'ok':'no')+'">Jawaban Anda: '+userLabel+'</div>' +
+        (isCorrect ? '' : '<div class="ra ok">Jawaban Benar: '+correctLabel+'</div>');
+      reviewList.appendChild(div);
+    });
+  }
+
+  document.getElementById('btn-review-toggle').addEventListener('click', function(){
+    const rl = document.getElementById('review-list');
+    const showing = rl.style.display === 'flex' || rl.style.display === 'block';
+    rl.style.display = showing ? 'none' : 'flex';
+    rl.style.flexDirection = 'column';
+    this.textContent = showing ? 'Lihat Pembahasan' : 'Sembunyikan Pembahasan';
+  });
+
+  document.getElementById('btn-restart').addEventListener('click', function(){
+    current = 0;
+    answers = new Array(TOTAL).fill(null);
+    quizFinished = false;
+    appResult.style.display = 'none';
+    app.style.display = 'block';
+    sidebar.classList.remove('collapsed');
+    btnToggleSidebar.classList.add('active');
+    document.getElementById('review-list').style.display = 'none';
+    document.getElementById('btn-review-toggle').textContent = 'Lihat Pembahasan';
+    render();
+    requestFullscreen();
+  });
+
+  // ===== SIDEBAR TOGGLE =====
+  btnToggleSidebar.addEventListener('click', ()=>{
+    const nowCollapsed = sidebar.classList.toggle('collapsed');
+    btnToggleSidebar.classList.toggle('active', !nowCollapsed);
+    btnToggleSidebar.title = nowCollapsed ? 'Tampilkan daftar soal' : 'Sembunyikan daftar soal';
+  });
+
+  // ===== FULLSCREEN HANDLING =====
+  function requestFullscreen(){
+    const el = document.documentElement;
+    const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullscreen || el.msRequestFullscreen;
+    if(req){ req.call(el).catch(()=>{}); }
+  }
+
+  function isFullscreen(){
+    return !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+  }
+
+  function handleFsChange(){
+    if(!isFullscreen() && app.style.display !== 'none' && !quizFinished){
+      fsWarning.style.display = 'flex';
+    } else if(isFullscreen()){
+      fsWarning.style.display = 'none';
+    }
+  }
+
+  ['fullscreenchange','webkitfullscreenchange','mozfullscreenchange','MSFullscreenChange'].forEach(evt=>{
+    document.addEventListener(evt, handleFsChange);
+  });
+
+  document.getElementById('btn-refullscreen').addEventListener('click', ()=>{
+    requestFullscreen();
+  });
+
+  document.getElementById('btn-start').addEventListener('click', ()=>{
+    requestFullscreen();
+    startScreen.style.display = 'none';
+    app.style.display = 'block';
+
+    // Semisalnya ada elemen navbar, sembunyikan saat latihan dimulai
+    const navTag = document.querySelector('my-navbar');
+    if(navTag) navTag.style.display = 'none';
+    const navCont = document.getElementById('navbar-container');
+    if(navCont) navCont.style.display = 'none';
+
+    buildOctetProgress();
+    buildJumplist();
+    render();
+  });
+
+})();
+</script>
+</body>
+</html>
