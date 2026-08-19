@@ -314,7 +314,7 @@ class MyNavbar extends HTMLElement {
                         </svg>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a href="latihan-classfull.html">Classfull</a></li>
+                        <li><a href="./classfull-soal.html">Classfull</a></li>
                         <li><a href="./subnetting.html">CIDR</a></li>
                         <li><a href="latihan-vlsm.html">VLSM</a></li>
                     </ul>
